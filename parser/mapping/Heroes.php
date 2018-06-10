@@ -1,6 +1,6 @@
 <?php
 
-namespace hotsweek\mapping;
+namespace hotsweek\parser\mapping;
 
 const HERO_ZERA = 1;
 const HERO_DEMO = 2;

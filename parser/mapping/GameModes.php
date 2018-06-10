@@ -1,6 +1,6 @@
 <?php
 
-namespace hotsweek\mapping;
+namespace hotsweek\parser\mapping;
 
 trait GameModes
 {

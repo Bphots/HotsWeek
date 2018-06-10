@@ -1,8 +1,8 @@
 <?php
 
-namespace hotsweek\builder;
+namespace hotsweek\parser\builder;
 
-use hotsweek\builder\BuilderMappings;
+use hotsweek\parser\builder\BuilderMappings;
 
 const SEP = '.';
 const SET = 1;

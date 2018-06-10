@@ -4,7 +4,7 @@ namespace hotsweek;
 
 use think\Db;
 use app\hotsweek\model\BattleReport;
-use hotsweek\ParseBattleReportCore;
+use hotsweek\parser\ParseBattleReportCore;
 
 define('BATTLEREPORT_ROOT', ROOT_PATH . 'battlereports' . DS);
 

@@ -1,24 +1,24 @@
 <?php
 
-namespace hotsweek;
+namespace hotsweek\parser;
 
 use app\hotsweek\model\Period;
 use app\hotsweek\model\Player;
-use hotsweek\builder\BaseDataBuilder;
-use hotsweek\builder\HeroesDataBuilder;
-use hotsweek\builder\EnemiesDataBuilder;
-use hotsweek\builder\MatesDataBuilder;
+use hotsweek\parser\builder\BaseDataBuilder;
+use hotsweek\parser\builder\HeroesDataBuilder;
+use hotsweek\parser\builder\EnemiesDataBuilder;
+use hotsweek\parser\builder\MatesDataBuilder;
 
 const WEEK_MIN = 0;
 // const WEEK_MIN = 2533;
 
 class ParseBattleReportCore
 {
-    use \hotsweek\mapping\Heroes;
+    use \hotsweek\parser\mapping\Heroes;
 
     protected $gameModeLimit = [3, 4, 5, 6];
     protected $timestamp;
-    protected $period_id;
+    protected $periodID;
     protected $weekNumber;
     protected $date;
     protected $contentBase;
@@ -28,7 +28,7 @@ class ParseBattleReportCore
     public function __construct($content)
     {
         $this->timestamp = strtotime($content['Timestamp']);
-        $this->period_id = Period::order('ReplayBuild desc')->value('id');
+        $this->periodID = Period::order('ReplayBuild desc')->value('id');
         $this->weekNumber = floor(($this->timestamp + 345600) / 604800) + 1;
         $this->thisWeekNumber = floor((time() + 345600) / 604800) + 1;
         $this->date = date("Y-m-d", $this->timestamp);
@@ -86,7 +86,7 @@ class ParseBattleReportCore
         if (!$baseData) {
             $player->baseData()->save([
                 'date'          =>  $this->date,
-                'period_id'     =>  $this->period_id,
+                'period_id'     =>  $this->periodID,
                 'week_number'   =>  $this->weekNumber,
             ]);
             $baseData = $player->baseData()->where([
@@ -108,7 +108,7 @@ class ParseBattleReportCore
         if (!$heroesData) {
             $player->heroesData()->save([
                 'hero_id'       =>  $heroID,
-                'period_id'     =>  $this->period_id,
+                'period_id'     =>  $this->periodID,
                 'week_number'   =>  $this->weekNumber,
             ]);
             $heroesData = $player->heroesData()->where([
@@ -137,7 +137,7 @@ class ParseBattleReportCore
             if (!$enemiesData) {
                 $player->enemiesData()->save([
                     'player2_id'    =>  $this->players[$key]->id,
-                    'period_id'     =>  $this->period_id,
+                    'period_id'     =>  $this->periodID,
                     'week_number'   =>  $this->weekNumber,
                 ]);
                 $enemiesData = $player->enemiesData()->where([
@@ -167,7 +167,7 @@ class ParseBattleReportCore
             if (!$matesData) {
                 $player->matesData()->save([
                     'player2_id'    =>  $this->players[$key]->id,
-                    'period_id'     =>  $this->period_id,
+                    'period_id'     =>  $this->periodID,
                     'week_number'   =>  $this->weekNumber,
                 ]);
                 $matesData = $player->matesData()->where([

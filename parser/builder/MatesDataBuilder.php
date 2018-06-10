@@ -1,8 +1,8 @@
 <?php
 
-namespace hotsweek\builder;
+namespace hotsweek\parser\builder;
 
-use hotsweek\builder\BuilderCommon;
+use hotsweek\parser\builder\BuilderCommon;
 
 class MatesDataBuilder extends BuilderCommon
 {

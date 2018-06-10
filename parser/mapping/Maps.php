@@ -1,6 +1,6 @@
 <?php
 
-namespace hotsweek\mapping;
+namespace hotsweek\parser\mapping;
 
 const HANAMURA = 1;
 const TOWERS_OF_DOOM = 2;
