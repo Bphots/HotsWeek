@@ -1,42 +1,63 @@
 <?php
 namespace hotsweek;
 
-use hotsweek\generator\Counter;
-use app\hotsweek\model\Period;
+use app\hotsweek\model\PlayerBase;
+use hotsweek\generator\Generator;
 
 class WeeklyGenerator
 {
-    protected $date;
     protected $weekNumber;
-    protected $periodID;
-    protected $savePath;
+    protected $generator;
 
     public function __construct($weekNumber)
     {
+        // Last weekNumber
         $this->weekNumber = $weekNumber;
-        $this->savePath = ROOT_PATH . 'weeklyreport' . DS . $weekNumber . DS . '%u' . DS;
-    }
-    
-    public function countGlobal()
-    {
-        $path = sprintf($this->savePath, 0);
-        $counter = new Counter;
-        $counter->setWeek($this->weekNumber);
-        $counter->countBaseData();
-        $counter->countHeroesData();
-        $counter->save($path);
+        $this->generator = new Generator($this->weekNumber);
     }
 
-    public function countPersonal($playerID)
+    public function global()
     {
-        $path = sprintf($this->savePath, $playerID);
-        $counter = new Counter;
-        $counter->setWeek($this->weekNumber);
-        $counter->setPlayer($playerID);
-        $counter->countBaseData();
-        $counter->countHeroesData();
-        $counter->countEnemiesData();
-        $counter->countMatesData();
-        $counter->save($path);
+        $this->generator->countGlobal();
+    }
+    
+    public function personal()
+    {
+        // Get players
+        $playerIDs = $this->getPlayers();
+        foreach ($playerIDs as $playerID) {
+            $this->generator->countPersonal($playerID);
+        }
+    }
+
+    protected function getPlayers()
+    {
+        $playersAll = $this->getPlayersAll();
+        $playersFinished = $this->getPlayersFinished();
+        return array_diff($playersAll, $playersFinished);
+    }
+
+    private function getPlayersAll()
+    {
+        return PlayerBase::where([
+            'week_number' => $this->weekNumber
+        ])->column('distinct player_id');
+    }
+
+    private function getPlayersFinished()
+    {
+        $playerIDs = [];
+        $path = ROOT_PATH . 'weeklyreport' . DS . $this->weekNumber;
+        is_dir($path) or mkdir($path, 0755, true);
+        $current = opendir($path);
+        while (($file = readdir($current)) !== false) {
+            $sub = $path . '/' . $file;
+            if ($file == '.' || $file == '..') {
+                continue;
+            } elseif (is_numeric($file) && is_dir($sub)) {
+                $playerIDs[] = (int)$file;
+            }
+        }
+        return $playerIDs;
     }
 }
