@@ -6,21 +6,7 @@ use app\hotsweek\model\PlayerHeroes;
 use app\hotsweek\model\PlayerEnemies;
 use app\hotsweek\model\PlayerMates;
 
-const TYPE_SUM = 0;
-const TYPE_AVG = 1;
-const TYPE_MAX = 2;
-const TYPE_MIN = 3;
-const FUNC_SUM = 'sum';
-const FUNC_AVG = 'avg';
-const FUNC_MAX = 'max';
-const FUNC_MIN = 'min';
-const FILENAME_BASE = 'PlayerBase';
-const FILENAME_HEROES = 'PlayerHeroes';
-const FILENAME_ENEMIES = 'PlayerEnemies';
-const FILENAME_MATES = 'PlayerMates';
-const SAVE_EXT = '.json';
-
-class Counter
+class Counter extends Presets
 {
     protected $weekNumber;
     protected $playerID;
@@ -28,77 +14,6 @@ class Counter
     protected $PlayerHeroes;
     protected $PlayerEnemies;
     protected $PlayerMates;
-    protected $items = [FILENAME_BASE, FILENAME_HEROES, FILENAME_ENEMIES, FILENAME_MATES];
-    protected $presets = [
-        // 0: Field name
-        // 1: Is it JSON ?
-        // 2: Items (base,heroes,enemies,mates) - Methods (sum,avg,max,min)
-        [[
-            'game_length', 'game_total', 'game_win',
-            'game_length_QuickMatch', 'game_length_HeroLeague',
-            'game_length_TeamLeague', 'game_length_UnrankedDraft',
-            'game_total_QuickMatch', 'game_total_HeroLeague',
-            'game_total_TeamLeague', 'game_total_UnrankedDraft',
-            'game_win_QuickMatch', 'game_win_HeroLeague',
-            'game_win_TeamLeague', 'game_win_UnrankedDraft',
-        ], false, [
-            [1, 1, 1, 1], [1, 0, 0, 0], [1, 0, 0, 0], [1, 0, 0, 0]
-        ]],
-        [[
-            'party_total', 'party_win',
-        ], false, [
-            [1, 1, 1, 1], [1, 0, 0, 0], false, [1, 0, 0, 0]
-        ]],
-        [[
-            'team1_count', 'Level', 'Takedowns', 'SoloKills',
-            'Assists', 'Deaths', 'HighestKillStreak', 'HeroDamage',
-            'SiegeDamage', 'StructureDamage', 'MinionDamage',
-            'CreepDamage', 'SummonDamage', 'TimeCCdEnemyHeroes',
-            'Healing', 'SelfHealing', 'DamageTaken', 'DamageSoaked',
-            'ExperienceContribution', 'TownKills', 'TimeSpentDead',
-            'MercCampCaptures', 'WatchTowerCaptures', 'MetaExperience',
-            'ProtectionGivenToAllies', 'TimeSilencingEnemyHeroes',
-            'TimeRootingEnemyHeroes', 'TimeStunningEnemyHeroes',
-            'ClutchHealsPerformed', 'EscapesPerformed',
-            'VengeancesPerformed', 'TeamfightEscapesPerformed',
-            'OutnumberedDeaths', 'TeamfightHealingDone',
-            'TeamfightDamageTaken', 'TeamfightHeroDamage',
-            'EndOfMatchAwardGivenToNonwinner', 'OnFireTimeOnFire',
-            'TimeOnPoint', 'TeamWinsDiablo', 'TeamWinsFemale',
-            'TeamWinsMale', 'TeamWinsStarCraft', 'TeamWinsWarcraft',
-            'WinsWarrior', 'WinsAssassin', 'WinsSupport', 'WinsSpecialist',
-            'WinsStarCraft', 'WinsDiablo', 'WinsWarcraft', 'WinsMale',
-            'WinsFemale', 'PlaysStarCraft', 'PlaysDiablo', 'PlaysOverwatch',
-            'PlaysWarCraft', 'PlaysWarrior', 'PlaysAssassin', 'PlaysSupport',
-            'PlaysSpecialist', 'PlaysMale', 'PlaysFemale',
-            'DragonNumberOfDragonCaptures', 'DragonShrinesCaptured',
-            'GardensSeedsCollected', 'GardensPlantDamage', 'AltarDamageDone',
-            'DamageDoneToImmortal', 'DamageDoneToShrineMinions', 'GemsTurnedIn',
-            'RavenTributesCollected', 'CurseDamageDone',
-            'MinesSkullsCollected', 'BlackheartDoubloonsCollected',
-            'BlackheartDoubloonsTurnedIn', 'TimeInTemple', 'DamageDoneToZerg',
-            'NukeDamageDone', 'TimeOnPayload', 'party_total_2', 'party_win_2',
-            'party_total_3', 'party_win_3', 'party_total_4', 'party_win_4',
-            'party_total_5', 'party_win_5'
-        ], false, [
-            [1, 1, 1, 1], false, false, false
-        ]],
-        [[
-            'maps_length', 'maps_total', 'maps_win'
-        ], true, [
-            [1, 1, 1, 1], false, false, false
-        ]],
-        [[
-            'Level_count', 'Takedowns_count', 'SoloKills_count',
-            'Assists_count', 'Deaths_count', 'HighestKillStreak_count',
-            'MatchAwards'
-        ], true, [
-            [0, 0, 1, 0], false, false, false
-        ]],
-        [['last_game_time'], false, [
-            [0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 1, 0]
-        ]],
-    ];
 
     public function setWeek($weekNumber)
     {
@@ -119,7 +34,8 @@ class Counter
         if (!$data) {
             return;
         }
-        $this->PlayerBase = json_encode($this->count($data, 0), JSON_UNESCAPED_UNICODE);
+        $this->PlayerBase = $this->count($data, 0);
+        // $this->PlayerBase = json_encode($this->count($data, 0), JSON_UNESCAPED_UNICODE);
     }
     
     public function countHeroesData()
@@ -136,7 +52,8 @@ class Counter
             $list[$each->hero_id][] = $each;
         }
         foreach ($list as $heroID => $each) {
-            $this->PlayerHeroes[$heroID] = json_encode($this->count($each, 1), JSON_UNESCAPED_UNICODE);
+            $this->PlayerHeroes[$heroID] = $this->count($each, 1);
+            // $this->PlayerHeroes[$heroID] = json_encode($this->count($each, 1), JSON_UNESCAPED_UNICODE);
         }
     }
 
@@ -158,7 +75,8 @@ class Counter
             $list[$enemyID][] = $each;
         }
         foreach ($list as $enemyID => $each) {
-            $this->PlayerEnemies[$enemyID] = json_encode($this->count($each, 2), JSON_UNESCAPED_UNICODE);
+            $this->PlayerEnemies[$enemyID] = $this->count($each, 2);
+            // $this->PlayerEnemies[$enemyID] = json_encode($this->count($each, 2), JSON_UNESCAPED_UNICODE);
         }
     }
 
@@ -180,63 +98,66 @@ class Counter
             $list[$mateID][] = $each;
         }
         foreach ($list as $mateID => $each) {
-            $this->PlayerMates[$mateID] = json_encode($this->count($each, 3), JSON_UNESCAPED_UNICODE);
+            $this->PlayerMates[$mateID] = $this->count($each, 3);
+            // $this->PlayerMates[$mateID] = json_encode($this->count($each, 3), JSON_UNESCAPED_UNICODE);
         }
     }
 
 
     public function save($path)
     {
-        $isEmpty = true;
+        $data = [];
         foreach ($this->items as $name) {
             if ($this->$name) {
-                $isEmpty = false;
+                $data[$name] = $this->$name;
             }
-            $data[$name] = $this->$name;
         }
-        if ($isEmpty) {
-            return;
+        if (empty($data)) {
+            return false;
         }
         $this->_save($data, $path);
+        return true;
     }
 
     protected function _save($data, $path)
     {
         is_dir($path) or mkdir($path, 0755, true);
-        foreach ($data as $name => $each) {
-            if (!$each) {
-                continue;
-            }
-            if (is_array($each)) {
-                $this->_save($each, $path . $name . DS);
-            } else {
-                file_put_contents($path . $name . SAVE_EXT, $each);
-            }
-        }
+        file_put_contents($path . 'data' . SAVE_EXT, json_encode($data, JSON_UNESCAPED_UNICODE));
+        // foreach ($data as $name => $each) {
+        //     if (!$each) {
+        //         continue;
+        //     }
+        //     if (is_array($each)) {
+        //         $this->_save($each, $path . $name . DS);
+        //     } else {
+        //         file_put_contents($path . $name . SAVE_EXT, $each);
+        //     }
+        // }
     }
 
     protected function count($data, $itemKey)
     {
         $return = [];
-        foreach ($this->presets as $preset) {
+        foreach ($this->presets as $key1 => $preset) {
             if (!$preset[2][$itemKey]) {
                 continue;
             }
             $fields = $preset[0];
             $isJson = $preset[1];
             $type = $preset[2][$itemKey];
-            foreach ($fields as $field) {
+            foreach ($fields as $key2 => $field) {
+                $alias = $this->alias($key1, $key2);
                 if ($isJson) {
-                    $this->countJson($return, $data, $field, $type);
+                    $this->countJson($return, $data, $field, $type, $alias);
                 } else {
-                    $this->countNumber($return, $data, $field, $type);
+                    $this->countNumber($return, $data, $field, $type, $alias);
                 }
             }
         }
         return $return;
     }
 
-    protected function countNumber(&$return, $data, $field, $type)
+    protected function countNumber(&$return, $data, $field, $type, $alias = null)
     {
         $count = 0;
         $total = count($data);
@@ -246,25 +167,26 @@ class Counter
             $max >= $each[$field] or $max = $each[$field];
             $min <= $each[$field] or $min = $each[$field];
         }
+        $name = $alias ?: $field;
         // sum
         if ($type[TYPE_SUM]) {
-            $return[$field][FUNC_SUM] = $count;
+            $return[$name][FUNC_SUM] = $count;
         }
         // avg
         if ($type[TYPE_AVG] && $total) {
-            $return[$field][FUNC_AVG] = round($count / $total, 4);
+            $return[$name][FUNC_AVG] = round($count / $total, 4);
         }
         // max
         if ($type[TYPE_MAX]) {
-            $return[$field][FUNC_MAX] = $max;
+            $return[$name][FUNC_MAX] = $max;
         }
         // min
         if ($type[TYPE_MIN]) {
-            $return[$field][FUNC_MIN] = $min;
+            $return[$name][FUNC_MIN] = $min;
         }
     }
 
-    protected function countJson(&$return, $data, $field, $type)
+    protected function countJson(&$return, $data, $field, $type, $alias = null)
     {
         $count = $max = $min = [];
         $total = count($data);
@@ -288,9 +210,10 @@ class Counter
                 $min[$key] <= $value or $min[$key] = $value;
             }
         }
+        $name = $alias ?: $field;
         // sum
         if ($type[TYPE_SUM]) {
-            $return[$field][TYPE_SUM] = $count;
+            $return[$name][FUNC_SUM] = $count;
         }
         // avg
         if ($type[TYPE_AVG] && $total) {
@@ -298,15 +221,15 @@ class Counter
             foreach ($count as $key => $value) {
                 $avg[$key] = round($value / $total, 4);
             }
-            $return[$field][TYPE_AVG] = $avg;
+            $return[$name][FUNC_AVG] = $avg;
         }
         // max
         if ($type[TYPE_MAX]) {
-            $return[$field][TYPE_MAX] = $max;
+            $return[$name][FUNC_MAX] = $max;
         }
         // min
         if ($type[TYPE_MIN]) {
-            $return[$field][TYPE_MIN] = $min;
+            $return[$name][FUNC_MIN] = $min;
         }
     }
 }
