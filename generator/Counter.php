@@ -1,6 +1,7 @@
 <?php
 namespace hotsweek\generator;
 
+use app\hotsweek\model\Player;
 use app\hotsweek\model\PlayerBase;
 use app\hotsweek\model\PlayerHeroes;
 use app\hotsweek\model\PlayerEnemies;
@@ -14,6 +15,7 @@ class Counter extends Presets
     protected $PlayerHeroes;
     protected $PlayerEnemies;
     protected $PlayerMates;
+    protected $PlayerInfo;
 
     public function setWeek($weekNumber)
     {
@@ -23,6 +25,17 @@ class Counter extends Presets
     public function setPlayer($playerID)
     {
         $this->playerID = $playerID;
+    }
+
+    public function pushPlayerInfo()
+    {
+        $player = Player::get($this->playerID);
+        $playerName = $player ? $player->Name . '#' . $player->BattleTag : UNKNOWN;
+        $playerRegion = $player ? $player->BattleNetRegionId : UNKNOWN;
+        $this->PlayerInfo = [
+            'name' => $playerName,
+            'region' => $playerRegion,
+        ];
     }
 
     public function countBaseData()

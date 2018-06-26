@@ -33,6 +33,7 @@ class Generator
         $counter = new Counter;
         $counter->setWeek($this->weekNumber);
         $counter->setPlayer($playerID);
+        $counter->pushPlayerInfo();
         $counter->countBaseData();
         $counter->countHeroesData();
         $counter->countEnemiesData();

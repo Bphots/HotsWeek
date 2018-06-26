@@ -10,14 +10,16 @@ const FUNC_AVG = 'avg';
 const FUNC_MAX = 'max';
 const FUNC_MIN = 'min';
 const SAVE_EXT = '.json';
+const FILENAME_PLAYERINFO = 'PlayerInfo';
 const FILENAME_BASE = 'PlayerBase';
 const FILENAME_HEROES = 'PlayerHeroes';
 const FILENAME_ENEMIES = 'PlayerEnemies';
 const FILENAME_MATES = 'PlayerMates';
+const UNKNOWN = 'Unknown';
 
 class Presets
 {
-    protected $items = [FILENAME_BASE, FILENAME_HEROES, FILENAME_ENEMIES, FILENAME_MATES];
+    protected $items = [FILENAME_PLAYERINFO, FILENAME_BASE, FILENAME_HEROES, FILENAME_ENEMIES, FILENAME_MATES];
     protected $presets = [
         // 0: Field name
         // 1: Is it JSON ?
