@@ -119,4 +119,35 @@ class Presets
     {
         return "$key1-$key2";
     }
+
+    public function save($path, $fileName = 'data')
+    {
+        $data = [];
+        foreach ($this->items as $name) {
+            if (isset($this->$name) && $this->$name) {
+                $data[$name] = $this->$name;
+            }
+        }
+        if (empty($data)) {
+            return false;
+        }
+        // $this->_save($data, $path);
+        is_dir($path) or mkdir($path, 0755, true);
+        file_put_contents($path . $fileName . SAVE_EXT, json_encode($data, JSON_UNESCAPED_UNICODE));
+        return true;
+    }
+
+    // protected function _save($data, $path)
+    // {
+    //     foreach ($data as $name => $each) {
+    //         if (!$each) {
+    //             continue;
+    //         }
+    //         if (is_array($each)) {
+    //             $this->_save($each, $path . $name . DS);
+    //         } else {
+    //             file_put_contents($path . $name . SAVE_EXT, $each);
+    //         }
+    //     }
+    // }
 }

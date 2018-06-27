@@ -9,12 +9,14 @@ class Generator
     protected $date;
     protected $weekNumber;
     protected $periodID;
+    protected $rootPath;
     protected $savePath;
 
     public function __construct($weekNumber)
     {
         $this->weekNumber = $weekNumber;
-        $this->savePath = ROOT_PATH . 'weeklyreport' . DS . $weekNumber . DS . '%u' . DS;
+        $this->rootPath = ROOT_PATH . 'weeklyreport' . DS . $weekNumber . DS;
+        $this->savePath = $this->rootPath . '%u' . DS;
     }
     
     public function countGlobal()
@@ -25,6 +27,16 @@ class Generator
         $counter->countBaseData();
         $counter->countHeroesData();
         $counter->save($path);
+    }
+
+    public function buildRanking()
+    {
+        $except = [0];
+        $path = sprintf($this->savePath, 0);
+        $ranking = new RankingBuilder;
+        $ranking->setPath($this->rootPath, $except);
+        $ranking->rank();
+        $ranking->save($path, 'ranking');
     }
 
     public function countPersonal($playerID)

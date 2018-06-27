@@ -116,38 +116,6 @@ class Counter extends Presets
         }
     }
 
-
-    public function save($path)
-    {
-        $data = [];
-        foreach ($this->items as $name) {
-            if ($this->$name) {
-                $data[$name] = $this->$name;
-            }
-        }
-        if (empty($data)) {
-            return false;
-        }
-        $this->_save($data, $path);
-        return true;
-    }
-
-    protected function _save($data, $path)
-    {
-        is_dir($path) or mkdir($path, 0755, true);
-        file_put_contents($path . 'data' . SAVE_EXT, json_encode($data, JSON_UNESCAPED_UNICODE));
-        // foreach ($data as $name => $each) {
-        //     if (!$each) {
-        //         continue;
-        //     }
-        //     if (is_array($each)) {
-        //         $this->_save($each, $path . $name . DS);
-        //     } else {
-        //         file_put_contents($path . $name . SAVE_EXT, $each);
-        //     }
-        // }
-    }
-
     protected function count($data, $itemKey)
     {
         $return = [];

@@ -20,6 +20,11 @@ class WeeklyGenerator
     {
         $this->generator->countGlobal();
     }
+
+    public function ranking()
+    {
+        $this->generator->buildRanking();
+    }
     
     public function personal()
     {
