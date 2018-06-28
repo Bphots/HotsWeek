@@ -65,17 +65,28 @@ class RankingBuilder extends Presets
             if (!isset($value['sum'])) {
                 continue;
             }
-            if (!isset($list[$key])) {
-                $list[$key] = [
-                    $playerID,
-                    $value['sum'],
-                ];
-            } elseif ($list[$key][1] < $value['sum']) {
-                $list[$key] = [
-                    $playerID,
-                    $value['sum'],
-                ];
+            if (is_array($value['sum'])) {
+                foreach ($value['sum'] as $_key => $_value) {
+                    $this->_compare($list[$key], $_key, $_value, $playerID);
+                }
+            } else {
+                $this->_compare($list, $key, $value['sum'], $playerID);
             }
+        }
+    }
+
+    private function _compare(&$list, $key, $value, $playerID)
+    {
+        if (!isset($list[$key])) {
+            $list[$key] = [
+                $playerID,
+                $value,
+            ];
+        } elseif ($list[$key][1] < $value) {
+            $list[$key] = [
+                $playerID,
+                $value,
+            ];
         }
     }
 }
