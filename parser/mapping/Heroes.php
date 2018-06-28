@@ -529,6 +529,7 @@ trait Heroes
         "겐지" => HERO_GENJ,
         "D.Va" => HERO_DVA0,
         "D.Va" => HERO_DVA0,
+        "D.VA" => HERO_DVA0,
         "Malthael" => HERO_MALT,
         "Maltael" => HERO_MALT,
         "Malthaël" => HERO_MALT,

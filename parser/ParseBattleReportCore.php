@@ -34,7 +34,7 @@ class ParseBattleReportCore
         $this->thisWeekNumber = floor((time() + 345600) / 604800) + 1;
         $this->date = date("Y-m-d", $this->timestamp);
         $this->contentPlayers = $content['Players'];
-        Hook::listen('anniversary', $content);
+        Hook::listen('anniversaryParser', $content);
         unset($content['Players']);
         $this->contentBase = $content;
         $this->buildParty($this->contentPlayers);
