@@ -102,7 +102,10 @@ class ParseBattleReportCore
 
     protected function parseHeroesData($player, $personal)
     {
-        $heroID = $this->heroesMapping[$personal['Character']];
+        $heroID = $this->heroesMapping[$personal['Character']] ?? null;
+        if (null === $heroID) {
+            return;
+        }
         $heroesData = $player->heroesData()->where([
             'hero_id'           =>  $heroID,
             'week_number'       =>  $this->weekNumber,
@@ -186,8 +189,7 @@ class ParseBattleReportCore
     protected function buildParty($players)
     {
         $partys = [];
-        foreach ($players as $key => $player)
-        {
+        foreach ($players as $key => $player) {
             $this->contentPlayers[$key]['party'] = 0;
             $value = $player['PartyValue'];
             if ($value) {
