@@ -16,6 +16,7 @@ const GARDEN_OF_TERROR = 11;
 const BRAXIS_HOLDOUT = 12;
 const WARHEAD_JUNCTION = 13;
 const VOLSKAYA_FOUNDRY = 14;
+const ALTERAC_PASS = 15;
 
 trait Maps
 {
@@ -247,5 +248,17 @@ trait Maps
         "Sprengkopfmanufaktur" => WARHEAD_JUNCTION,
         "Poligon Nuklearny" => WARHEAD_JUNCTION,
         "Stazione Atomica" => WARHEAD_JUNCTION,
+        "Alterac Pass" => ALTERAC_PASS,
+        "Alteracpass" => ALTERAC_PASS,
+        "Cañón de Alterac" => ALTERAC_PASS,
+        "Garganta de Alterac" => ALTERAC_PASS,
+        "Paso de Alterac" => ALTERAC_PASS,
+        "Passe d’Alterac" => ALTERAC_PASS,
+        "Passo d'Alterac" => ALTERAC_PASS,
+        "Przełęcz Alterak" => ALTERAC_PASS,
+        "Альтеракский перевал" => ALTERAC_PASS,
+        "奥特兰克战道" => ALTERAC_PASS,
+        "奧特蘭克隘口" => ALTERAC_PASS,
+        "알터랙 고개" => ALTERAC_PASS,
     ];
 }

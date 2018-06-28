@@ -81,6 +81,7 @@ const HERO_FIRE = 76;
 const HERO_MAIE = 77;
 const HERO_FENX = 78;
 const HERO_DECK = 79;
+const HERO_YREL = 80;
 
 trait Heroes
 {
@@ -598,5 +599,10 @@ trait Heroes
         "迪卡德" => HERO_DECK,
         "데커드" => HERO_DECK,
         "Декард" => HERO_DECK,
+        "Yrel" => HERO_YREL,
+        "Ирель" => HERO_YREL,
+        "伊瑞尔" => HERO_YREL,
+        "이렐" => HERO_YREL,
+        "伊芮爾" => HERO_YREL,
     ];
 }
