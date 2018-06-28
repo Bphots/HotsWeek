@@ -2,6 +2,7 @@
 
 namespace hotsweek\parser;
 
+use think\Hook;
 use app\hotsweek\model\Period;
 use app\hotsweek\model\Player;
 use hotsweek\parser\builder\BaseDataBuilder;
@@ -33,6 +34,7 @@ class ParseBattleReportCore
         $this->thisWeekNumber = floor((time() + 345600) / 604800) + 1;
         $this->date = date("Y-m-d", $this->timestamp);
         $this->contentPlayers = $content['Players'];
+        Hook::listen('anniversary', $content);
         unset($content['Players']);
         $this->contentBase = $content;
         $this->buildParty($this->contentPlayers);
