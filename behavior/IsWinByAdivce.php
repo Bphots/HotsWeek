@@ -152,9 +152,71 @@ class IsWinByAdivce extends BuilderMappings
             return false;
         }
         $tops = [];
-        foreach (array_slice($data, 0, 9) as $each) {
+        $heroesValid = $this->getValidHeroes($data);
+        foreach ($heroesValid as $each) {
             $tops[] = $each[0];
         }
         return in_array($heroID, $tops);
+    }
+
+    private function getValidHeroes($data)
+    {
+        if (!$data) return $data;
+        $index = 0;
+        $delta = 5;
+        $eachRow = 3;
+        $total = count($data);
+        // T1
+        $tier = 1;
+        $max = $eachRow * 2;
+        $tierList[$tier] = [];
+        if ($index < $total) {
+            $pointMax[$tier] = $data[$index][1];
+            do {
+                if ($data[$index][1] > 0) {
+                    $tierList[$tier][] = $data[$index];
+                }
+                $index++;
+                if ($index >= $total) {
+                    break;
+                }
+            } while (count($tierList[$tier]) < $max && $pointMax[$tier] - $data[$index][1] <= $delta);
+        }
+        // T2
+        $tier = 2;
+        $max = count($tierList[1]) > $eachRow ? $eachRow : $eachRow * 2;
+        $tierList[$tier] = [];
+        if ($index < $total) {
+            $pointMax[$tier] = $data[$index][1];
+            do {
+                if ($data[$index][1] > 0) {
+                    $tierList[$tier][] = $data[$index];
+                }
+                $index++;
+                if ($index >= $total) {
+                    break;
+                }
+            } while (count($tierList[$tier]) < $max && $pointMax[$tier] - $data[$index][1] <= $delta);
+        }
+        // T3
+        if (!(count($tierList[1]) > $eachRow || count($tierList[2]) > $eachRow)) {
+            $tier = 3;
+            $max = $eachRow;
+            $tierList[$tier] = [];
+            if ($index < $total) {
+                do {
+                    $tierList[$tier][] = $data[$index];
+                    $index++;
+                    if ($index >= $total) {
+                        break;
+                    }
+                } while (count($tierList[$tier]) < $max);
+            }
+        }
+        $heroes = [];
+        foreach ($tierList as $tier) {
+            $heroes = array_merge_recursive($heroes, $tier);
+        }
+        return $heroes;
     }
 }
