@@ -17,24 +17,26 @@ class ParseBattleReportCore
 {
     use \hotsweek\parser\mapping\Heroes;
 
-    protected $gameModeLimit = [3, 4, 5, 6];
+    protected $gameModeLimit;
     protected $timestamp;
     protected $periodID;
     protected $weekNumber;
     protected $date;
+    protected $content;
     protected $contentBase;
     protected $contentPlayers;
     protected $players;
 
     public function __construct($content)
     {
+        $this->gameModeLimit = $this->gameModesMapping;
         $this->timestamp = strtotime($content['Timestamp']);
         $this->periodID = Period::order('ReplayBuild desc')->value('id');
         $this->weekNumber = floor(($this->timestamp + 345600) / 604800) + 1;
         $this->thisWeekNumber = floor((time() + 345600) / 604800) + 1;
         $this->date = date("Y-m-d", $this->timestamp);
+        $this->content = $content;
         $this->contentPlayers = $content['Players'];
-        Hook::listen('anniversaryParser', $content);
         unset($content['Players']);
         $this->contentBase = $content;
         $this->buildParty($this->contentPlayers);
@@ -55,6 +57,11 @@ class ParseBattleReportCore
             $this->parseEnemiesData($player, $personal);
             $this->parseMatesData($player, $personal);
         }
+        $hookData = [
+            'weekNumber' => $this->weekNumber,
+            'content' => $this->content,
+        ];
+        Hook::listen('BattleReportParsingCompleted', $hookData);
         return true;
     }
 
