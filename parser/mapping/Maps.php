@@ -2,21 +2,7 @@
 
 namespace hotsweek\parser\mapping;
 
-const HANAMURA = 1;
-const TOWERS_OF_DOOM = 2;
-const INFERNAL_SHRINES = 3;
-const BATTLEFIELD_OF_ETERNITY = 4;
-const TOMB_OF_THE_SPIDER_QUEEN = 5;
-const SKY_TEMPLE = 6;
-const DRAGON_SHIRE = 7;
-const BLACKHEARTS_BAY = 8;
-const HAUNTED_MINES = 9;
-const CURSED_HOLLOW = 10;
-const GARDEN_OF_TERROR = 11;
-const BRAXIS_HOLDOUT = 12;
-const WARHEAD_JUNCTION = 13;
-const VOLSKAYA_FOUNDRY = 14;
-const ALTERAC_PASS = 15;
+include_once __DIR__ . '/../Constants.php';
 
 trait Maps
 {

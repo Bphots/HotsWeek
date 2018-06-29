@@ -3,8 +3,10 @@ namespace hotsweek\behavior;
 
 use hotsweek\parser\builder\BuilderMappings;
 use app\hotsweek\model\Player;
-use app\common\model\WinnerCount;
+use app\hotsweek\model\WinnerCount;
 use app\common\model\Maps;
+
+include_once __DIR__ . '/../parser/Constants.php';
 
 class HeroLeagueWinByAdivce extends BuilderMappings
 {
@@ -22,18 +24,20 @@ class HeroLeagueWinByAdivce extends BuilderMappings
         }
         $combo = array_values($this->heroIDs);
         sort($combo);
+        $bans = $this->getBans();
+        $combo = array_merge($combo, $bans);
         $cacheName = 'anniversary:' . $this->map->code . ',' . json_encode($combo);
         $cache = cache($cacheName);
-        dump($cacheName);
-        dump($cache);
         if (!$cache) {
             return false;
         }
         cache($cacheName, null);
-        foreach ($combo as $heroID) {
+        $banIndex = [0, 8, 1, 7];
+        foreach ($cache as $key => $heroID) {
+            if (in_array($key, $banIndex)) continue;
             if ($this->checkIfOnRanking($heroID, $cache)) {
                 $playerIndex = $this->heroPlayers[$heroID];
-                if ($this->content['Players']['IsWinner']) {
+                if ($this->content['Players'][$playerIndex]['IsWinner']) {
                     $player = $this->getPlayer($playerIndex);
                     // Record
                     $this->record($player);
@@ -54,6 +58,7 @@ class HeroLeagueWinByAdivce extends BuilderMappings
 
     protected function record($player)
     {
+        if (!$player) return false;
         $record = WinnerCount::get(['player_id', $player->id]);
         if (!$record) {
             $record = new WinnerCount;
@@ -103,10 +108,10 @@ class HeroLeagueWinByAdivce extends BuilderMappings
             'params' => [
                 'choices' => array_slice($choices, 0, $length),
                 'map' => $this->map->code,
+                'debug' => false,
                 'ignore' => true,
             ]
         ];
-        $t1 = microtime(true);
         $client = new \swoole_client(SWOOLE_SOCK_TCP);
         if (!$client->connect('127.0.0.1', 9504, -1)) {
             return false;
@@ -119,9 +124,23 @@ class HeroLeagueWinByAdivce extends BuilderMappings
             return false;
         }
         $tops = [];
-        foreach (array_slice($data, 0, TOP) as $each) {
+        foreach (array_slice($data, 0, 9) as $each) {
             $tops[] = $each[0];
         }
         return in_array($heroID, $tops);
+    }
+
+    protected function getBans()
+    {
+        $banData = $this->content['TeamHeroBans'];
+        $codes = array_merge($banData[0], $banData[1]);
+        $bans = [];
+        foreach ($codes as $code) {
+            $heroID = @constant(strtoupper("HERO_$code"));
+            if ($heroID) {
+                $bans[] = $heroID;
+            }
+        }
+        return $bans;
     }
 }
