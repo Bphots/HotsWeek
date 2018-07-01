@@ -16,12 +16,12 @@ class Generator
     {
         $this->weekNumber = $weekNumber;
         $this->rootPath = ROOT_PATH . 'weeklyreport' . DS . $weekNumber . DS;
-        $this->savePath = $this->rootPath . '%u' . DS;
+        $this->savePath = $this->rootPath . '%u' . DS . '%u' . DS;
     }
     
     public function countGlobal()
     {
-        $path = sprintf($this->savePath, 0);
+        $path = sprintf($this->savePath, 0, 0);
         $counter = new Counter;
         $counter->setWeek($this->weekNumber);
         $counter->countBaseData();
@@ -32,7 +32,7 @@ class Generator
     public function buildRanking()
     {
         $except = [0];
-        $path = sprintf($this->savePath, 0);
+        $path = sprintf($this->savePath, 0, 0);
         $ranking = new RankingBuilder;
         $ranking->setPath($this->rootPath, $except);
         $ranking->rank();
@@ -41,7 +41,9 @@ class Generator
 
     public function countPersonal($playerID)
     {
-        $path = sprintf($this->savePath, $playerID);
+        // For EXT3 file system
+        $groupID = floor($playerID / 1000);
+        $path = sprintf($this->savePath, $groupID, $playerID);
         $counter = new Counter;
         $counter->setWeek($this->weekNumber);
         $counter->setPlayer($playerID);

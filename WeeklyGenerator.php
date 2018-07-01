@@ -53,14 +53,16 @@ class WeeklyGenerator
     {
         $playerIDs = [];
         $path = ROOT_PATH . 'weeklyreport' . DS . $this->weekNumber;
-        is_dir($path) or mkdir($path, 0755, true);
-        $current = opendir($path);
-        while (($file = readdir($current)) !== false) {
-            $sub = $path . '/' . $file;
-            if ($file == '.' || $file == '..') {
-                continue;
-            } elseif (is_numeric($file) && is_dir($sub)) {
-                $playerIDs[] = (int)$file;
+        if (is_dir($path)) {
+            $root = opendir($path);
+            while (($groupID = readdir($root)) !== false) {
+                $_path = $path . DS . $groupID;
+                $_root = opendir($_path);
+                while (($playerID = readdir($_root)) !== false) {
+                    if (is_numeric($playerID) && is_dir($_path . DS . $playerID)) {
+                        $playerIDs[] = (int)$playerID;
+                    }
+                }
             }
         }
         return $playerIDs;

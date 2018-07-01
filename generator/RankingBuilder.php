@@ -23,10 +23,15 @@ class RankingBuilder extends Presets
     public function rank()
     {
         foreach ($this->playerIDs as $playerID) {
-            $fileName = $this->rootPath . $playerID . DS . 'data' . SAVE_EXT;
+            // For EXT3 file system
+            $groupID = floor($playerID / 1000);
+            $fileName = $this->rootPath . $groupID . DS . $playerID . DS . 'data' . SAVE_EXT;
+            if (!file_exists($fileName)) {
+                continue;
+            }
             $data = @file_get_contents($fileName);
             if ($data) {
-                $data = json_decode($data, true);
+                $data = @json_decode($data, true) ?: [];
                 if (isset($data[FILENAME_BASE])) {
                     $this->compare($this->PlayerBase, $data[FILENAME_BASE], $playerID);
                 }
@@ -47,13 +52,13 @@ class RankingBuilder extends Presets
         $playerIDs = [];
         $path = $this->rootPath;
         $root = opendir($path);
-        while (($name = readdir($root)) !== false) {
-            $dir = $path . '/' . $name;
-            $playerID = (int)$name;
-            if (!is_numeric($name) || in_array($playerID, $this->except)) {
-                continue;
-            } elseif (is_dir($dir)) {
-                $playerIDs[] = $playerID;
+        while (($groupID = readdir($root)) !== false) {
+            $_path = $path . DS . $groupID;
+            $_root = opendir($_path);
+            while (($playerID = readdir($_root)) !== false) {
+                if (is_numeric($playerID) && is_dir($_path . DS . $playerID) && !in_array($playerID, $this->except)) {
+                    $playerIDs[] = (int)$playerID;
+                }
             }
         }
         $this->playerIDs = $playerIDs;
