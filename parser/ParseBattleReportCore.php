@@ -75,13 +75,13 @@ class ParseBattleReportCore
             ]);
             if (!$player) {
                 $player = new Player;
-                $player->save([
-                    'BattleNetId'       =>  $each['BattleNetId'],
-                    'Name'              =>  $each['Name'],
-                    'BattleTag'         =>  $each['BattleTag'],
-                    'BattleNetRegionId' =>  $each['BattleNetRegionId'],
-                ]);
             }
+            $player->save([
+                'BattleNetId'       =>  $each['BattleNetId'],
+                'Name'              =>  $each['Name'],
+                'BattleTag'         =>  $each['BattleTag'],
+                'BattleNetRegionId' =>  $each['BattleNetRegionId'],
+            ]);
             $players[$key] = $player;
         }
         $this->players = $players;
