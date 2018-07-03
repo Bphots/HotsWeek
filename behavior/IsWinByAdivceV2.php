@@ -18,7 +18,7 @@ class IsWinByAdivce extends BuilderMappings
     protected $heroPlayers;
     protected $recordField      =   'win_by_adivce';
     protected $recordFieldMap   =   'map_win_by_adivce';
-    protected $banIndex         =   [0, 1, 10, 2, 3, 9];
+    protected $banIndex         =   [0, 2, 10, 1, 3, 9];
     protected $gameModeLimit    =   [GAMEMODE_HEROLEAGUE, GAMEMODE_TEAMLEAGUE, GAMEMODE_UNRANKEDDRAFT];
 
     public function run(&$data)
@@ -100,7 +100,7 @@ class IsWinByAdivce extends BuilderMappings
             return false;
         }
         $heroNames = $this->content['OrderedPicks'];
-        array_splice($heroNames, 0, 0, [$banHeroNames[0], $banHeroNames[1], $banHeroNames[2], $banHeroNames[3]]);
+        array_splice($heroNames, 0, 0, [$banHeroNames[0], $banHeroNames[2], $banHeroNames[1], $banHeroNames[3]]);
         array_splice($heroNames, 9, 0, [$banHeroNames[4], $banHeroNames[5]]);
         foreach ($heroNames as $heroName) {
             $heroID = $this->heroesMapping[$heroName] ?? 0;
