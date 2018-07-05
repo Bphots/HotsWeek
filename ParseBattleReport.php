@@ -34,6 +34,7 @@ class ParseBattleReport
             Db::startTrans();
             try {
                 $this->parse($key);
+                Db::commit();
             } catch (\Exception $e) {
                 Db::rollback();
             }
