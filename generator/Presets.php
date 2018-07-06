@@ -70,12 +70,12 @@ class Presets
             'BlackheartDoubloonsTurnedIn', 'TimeInTemple', 'DamageDoneToZerg',
             'NukeDamageDone', 'TimeOnPayload', 'party_total_2', 'party_win_2',
             'party_total_3', 'party_win_3', 'party_total_4', 'party_win_4',
-            'party_total_5', 'party_win_5'
+            'party_total_5', 'party_win_5', 'win_by_advice'
         ], false, [
             [1, 1, 1, 1], false, false, false
         ]],
         [[
-            'maps_length', 'maps_total', 'maps_win'
+            'maps_length', 'maps_total', 'maps_win', 'GameMode_win_by_advice'
         ], true, [
             [1, 1, 1, 1], false, false, false
         ]],
