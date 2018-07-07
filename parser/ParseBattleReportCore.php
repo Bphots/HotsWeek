@@ -75,13 +75,22 @@ class ParseBattleReportCore
             ]);
             if (!$player) {
                 $player = new Player;
+                $player->save([
+                    'BattleNetId'       =>  $each['BattleNetId'],
+                    'BattleNetRegionId' =>  $each['BattleNetRegionId'],
+                    'Name'              =>  $each['Name'],
+                    'BattleTag'         =>  $each['BattleTag'],
+                    'rename_gametime'   =>  $this->timestamp,
+                ]);
+            } else {
+                if ($this->timestamp > $each['rename_gametime']) {
+                    $player->save([
+                        'Name'              =>  $each['Name'],
+                        'BattleTag'         =>  $each['BattleTag'],
+                        'rename_gametime'   =>  $this->timestamp,
+                    ]);
+                }
             }
-            $player->save([
-                'BattleNetId'       =>  $each['BattleNetId'],
-                'Name'              =>  $each['Name'],
-                'BattleTag'         =>  $each['BattleTag'],
-                'BattleNetRegionId' =>  $each['BattleNetRegionId'],
-            ]);
             $players[$key] = $player;
         }
         $this->players = $players;
