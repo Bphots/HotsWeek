@@ -7,7 +7,7 @@ use app\common\model\Maps;
 
 include_once __DIR__ . '/../parser/Constants.php';
 
-class IsWinByAdivce extends BuilderMappings
+class IsWinByAdvice extends BuilderMappings
 {
     protected $weekNumber;
     protected $content;
@@ -16,10 +16,10 @@ class IsWinByAdivce extends BuilderMappings
     protected $gameMode;
     protected $heroList;
     protected $heroPlayers;
-    protected $recordField      =   'win_by_adivce';
-    protected $recordFieldMap   =   'map_win_by_adivce';
-    protected $banIndex         =   [0, 2, 10, 1, 3, 9];
-    protected $gameModeLimit    =   [GAMEMODE_HEROLEAGUE, GAMEMODE_TEAMLEAGUE, GAMEMODE_UNRANKEDDRAFT];
+    protected $recordField          =   'win_by_advice';
+    protected $recordFieldGameMode  =   'GameMode_win_by_advice';
+    protected $banIndex             =   [0, 8, 1, 7];
+    protected $gameModeLimit        =   [GAMEMODE_HEROLEAGUE, GAMEMODE_TEAMLEAGUE, GAMEMODE_UNRANKEDDRAFT];
 
     public function run(&$data)
     {
@@ -28,7 +28,7 @@ class IsWinByAdivce extends BuilderMappings
         if (!$this->getGameMode() || !$this->getMap() || !$this->getHeroList() || !$this->getHeroPlayers()) {
             return false;
         }
-        for ($i = 0; $i < 16; $i++) {
+        for ($i = 0; $i < 14; $i++) {
             if (in_array($i, $this->banIndex)) {
                 continue;
             }
@@ -64,12 +64,12 @@ class IsWinByAdivce extends BuilderMappings
             return false;
         }
         $field = $this->recordField;
-        $fieldMap = $this->recordFieldMap;
+        $fieldGameMode = $this->recordFieldGameMode;
         $data->$field++;
-        $tmp = @json_decode($data->$fieldMap, true) ? : [];
+        $tmp = @json_decode($data->$fieldGameMode, true) ? : [];
         isset($tmp[$this->gameMode]) or $tmp[$this->gameMode] = 0;
         $tmp[$this->gameMode]++;
-        $data->$fieldMap = json_encode($tmp, JSON_UNESCAPED_UNICODE);
+        $data->$fieldGameMode = json_encode($tmp, JSON_UNESCAPED_UNICODE);
         $data->save();
         return true;
     }
@@ -96,12 +96,12 @@ class IsWinByAdivce extends BuilderMappings
         }
         $heroList = [];
         $banHeroNames = $this->content['OrderedBans'];
-        if (count($banHeroNames) !== 6) {
+        if (count($banHeroNames) !== 4) {
             return false;
         }
         $heroNames = $this->content['OrderedPicks'];
-        array_splice($heroNames, 0, 0, [$banHeroNames[0], $banHeroNames[2], $banHeroNames[1], $banHeroNames[3]]);
-        array_splice($heroNames, 9, 0, [$banHeroNames[4], $banHeroNames[5]]);
+        array_splice($heroNames, 0, 0, [$banHeroNames[0], $banHeroNames[1]]);
+        array_splice($heroNames, 7, 0, [$banHeroNames[2], $banHeroNames[3]]);
         foreach ($heroNames as $heroName) {
             $heroID = $this->heroesMapping[$heroName] ?? 0;
             $heroList[] = $heroID;

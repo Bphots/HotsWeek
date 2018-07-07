@@ -16,6 +16,7 @@ const WEEK_MIN = 0;
 class ParseBattleReportCore
 {
     use \hotsweek\parser\mapping\Heroes;
+    use \hotsweek\parser\mapping\GameModes;
 
     protected $gameModeLimit;
     protected $timestamp;
@@ -29,7 +30,7 @@ class ParseBattleReportCore
 
     public function __construct($content)
     {
-        $this->gameModeLimit = $this->gameModesMapping;
+        $this->gameModeLimit = array_keys($this->gameModesMapping);
         $this->timestamp = strtotime($content['Timestamp']);
         $this->periodID = Period::order('ReplayBuild desc')->value('id');
         $this->weekNumber = floor(($this->timestamp + 345600) / 604800) + 1;
