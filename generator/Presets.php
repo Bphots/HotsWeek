@@ -84,7 +84,7 @@ class Presets
             'Assists_count', 'Deaths_count', 'HighestKillStreak_count',
             'MatchAwards'
         ], true, [
-            [0, 0, 1, 0], false, false, false
+            [1, 0, 0, 0], false, false, false
         ]],
         [['last_game_time'], false, [
             [0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 1, 0]
