@@ -47,8 +47,42 @@ class Counter extends Presets
         if (!$data) {
             return;
         }
-        $this->PlayerBase = $this->count($data, 0);
+        $dataMerge = [];
+        foreach ($data as $each) {
+            $this->mergePlayers($dataMerge, $each, 0);
+        }
+        $this->PlayerBase = $this->count($dataMerge, 0);
         // $this->PlayerBase = json_encode($this->count($data, 0), JSON_UNESCAPED_UNICODE);
+    }
+
+    protected function mergePlayers(&$list, $data, $itemKey)
+    {
+        isset($list[$data->date]) or $list[$data->date] = [];
+        $tmp = $list[$data->date];
+        foreach ($this->presets as $preset) {
+            if (!$preset[2][$itemKey]) {
+                continue;
+            }
+            $fields = $preset[0];
+            $isJson = $preset[1];
+            foreach ($fields as $field) {
+                if ($isJson) {
+                    isset($tmp[$field]) or $tmp[$field] = [];
+                    $jsonData = json_decode($data[$field], true) ?: [];
+                    if (!$jsonData) {
+                        continue;
+                    }
+                    foreach ($jsonData as $key => $value) {
+                        isset($tmp[$field][$key]) or $tmp[$field][$key] = 0;
+                        $tmp[$field][$key] += $value;
+                    }
+                } else {
+                    isset($tmp[$field]) or $tmp[$field] = 0;
+                    $tmp[$field] += $data[$field];
+                }
+            }
+        }
+        $list[$data->date] = $tmp;
     }
     
     public function countHeroesData()
@@ -172,7 +206,7 @@ class Counter extends Presets
         $count = $max = $min = [];
         $total = count($data);
         foreach ($data as $each) {
-            $array = json_decode($each[$field], true);
+            $array = is_array($each[$field]) ? $each[$field] : json_decode($each[$field], true);
             if (!$array) {
                 continue;
             }
