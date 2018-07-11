@@ -82,16 +82,33 @@ class RankingBuilder extends Presets
 
     private function _compare(&$list, $key, $value, $playerID)
     {
+        if (!$value) return;
         if (!isset($list[$key])) {
-            $list[$key] = [
+            $list[$key][0] = [
                 $playerID,
                 $value,
             ];
-        } elseif ($list[$key][1] < $value) {
-            $list[$key] = [
-                $playerID,
-                $value,
-            ];
+        } else {
+            foreach ($list[$key] as $v) {
+                $ranking[$v[0]] = $v[1];
+            }
+            isset($ranking[$playerID]) or $ranking[$playerID] = $value;
+            arsort($ranking);
+            $count = 0;
+            foreach ($ranking as $id => $v) {
+                if ($count >= 30) break;
+                $list[$key][$count] = [
+                    $id,
+                    $v,
+                ];
+                $count++;
+            }
         }
+        // } elseif ($list[$key][0][1] < $value) {
+        //     $list[$key][0] = [
+        //         $playerID,
+        //         $value,
+        //     ];
+        // }
     }
 }
