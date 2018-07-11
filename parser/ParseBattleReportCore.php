@@ -32,7 +32,7 @@ class ParseBattleReportCore
     {
         $this->gameModeLimit = array_keys($this->gameModesMapping);
         $this->timestamp = strtotime($content['Timestamp']);
-        $this->periodID = Period::order('ReplayBuild desc')->value('id');
+        $this->periodID = Period::order('ReplayBuild desc')->where('ReplayBuild', '<=', $content['ReplayBuild'])->value('id');
         $this->weekNumber = floor(($this->timestamp + 345600) / 604800) + 1;
         $this->thisWeekNumber = floor((time() + 345600) / 604800) + 1;
         $this->date = date("Y-m-d", $this->timestamp);
