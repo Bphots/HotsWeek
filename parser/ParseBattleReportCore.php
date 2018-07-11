@@ -10,8 +10,8 @@ use hotsweek\parser\builder\HeroesDataBuilder;
 use hotsweek\parser\builder\EnemiesDataBuilder;
 use hotsweek\parser\builder\MatesDataBuilder;
 
-const WEEK_MIN = 0;
-// const WEEK_MIN = 2533;
+// const WEEK_MIN = 0;
+const WEEK_MIN = 2533;
 
 class ParseBattleReportCore
 {
@@ -84,7 +84,7 @@ class ParseBattleReportCore
                     'rename_gametime'   =>  $this->timestamp,
                 ]);
             } else {
-                if ($this->timestamp > $each['rename_gametime']) {
+                if ($this->timestamp > $player['rename_gametime']) {
                     $player->save([
                         'Name'              =>  $each['Name'],
                         'BattleTag'         =>  $each['BattleTag'],

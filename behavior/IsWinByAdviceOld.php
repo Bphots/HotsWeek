@@ -18,7 +18,7 @@ class IsWinByAdvice extends BuilderMappings
     protected $heroPlayers;
     protected $recordField          =   'win_by_advice';
     protected $recordFieldGameMode  =   'GameMode_win_by_advice';
-    protected $banIndex             =   [0, 2, 10, 1, 3, 9];
+    protected $banIndex             =   [0, 8, 1, 7];
     protected $gameModeLimit        =   [GAMEMODE_HEROLEAGUE, GAMEMODE_TEAMLEAGUE, GAMEMODE_UNRANKEDDRAFT];
 
     public function run(&$data)
@@ -28,7 +28,7 @@ class IsWinByAdvice extends BuilderMappings
         if (!$this->getGameMode() || !$this->getMap() || !$this->getHeroList() || !$this->getHeroPlayers()) {
             return false;
         }
-        for ($i = 0; $i < 16; $i++) {
+        for ($i = 0; $i < 14; $i++) {
             if (in_array($i, $this->banIndex)) {
                 continue;
             }
@@ -96,12 +96,12 @@ class IsWinByAdvice extends BuilderMappings
         }
         $heroList = [];
         $banHeroNames = $this->content['OrderedBans'];
-        if (count($banHeroNames) !== 6) {
+        if (count($banHeroNames) !== 4) {
             return false;
         }
         $heroNames = $this->content['OrderedPicks'];
-        array_splice($heroNames, 0, 0, [$banHeroNames[0], $banHeroNames[2], $banHeroNames[1], $banHeroNames[3]]);
-        array_splice($heroNames, 9, 0, [$banHeroNames[4], $banHeroNames[5]]);
+        array_splice($heroNames, 0, 0, [$banHeroNames[0], $banHeroNames[1]]);
+        array_splice($heroNames, 7, 0, [$banHeroNames[2], $banHeroNames[3]]);
         foreach ($heroNames as $heroName) {
             $heroID = $this->heroesMapping[$heroName] ?? 0;
             $heroList[] = $heroID;
