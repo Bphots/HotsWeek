@@ -38,21 +38,39 @@ class Counter extends Presets
         ];
     }
 
+    // public function countBaseData()
+    // {
+    //     $limit = [];
+    //     $this->weekNumber && $limit['week_number'] = $this->weekNumber;
+    //     $this->playerID && $limit['player_id'] = $this->playerID;
+    //     $data = PlayerBase::all($limit);
+    //     if (!$data) {
+    //         return;
+    //     }
+    //     $dataMerge = [];
+    //     foreach ($data as $each) {
+    //         $this->mergePlayers($dataMerge, $each, 0);
+    //     }
+    //     $this->PlayerBase = $this->count($dataMerge, 0);
+    //     // $this->PlayerBase = json_encode($this->count($data, 0), JSON_UNESCAPED_UNICODE);
+    // }
+
     public function countBaseData()
     {
         $limit = [];
         $this->weekNumber && $limit['week_number'] = $this->weekNumber;
         $this->playerID && $limit['player_id'] = $this->playerID;
-        $data = PlayerBase::all($limit);
+        $data = [];
+        PlayerBase::where($limit)->chunk(1000, function ($rows) use (&$data) {
+            foreach ($rows as $row) {
+                $this->mergePlayers($data, $row, 0);
+            }
+        });
         if (!$data) {
             return;
         }
-        $dataMerge = [];
-        foreach ($data as $each) {
-            $this->mergePlayers($dataMerge, $each, 0);
-        }
-        $this->PlayerBase = $this->count($dataMerge, 0);
-        // $this->PlayerBase = json_encode($this->count($data, 0), JSON_UNESCAPED_UNICODE);
+        $this->PlayerBase = $this->count($data, 0);
+        unset($data);
     }
 
     protected function mergePlayers(&$list, $data, $itemKey)
@@ -85,24 +103,67 @@ class Counter extends Presets
         $list[$data->date] = $tmp;
     }
     
+    // public function countHeroesData()
+    // {
+    //     $limit = [];
+    //     $this->weekNumber && $limit['week_number'] = $this->weekNumber;
+    //     $this->playerID && $limit['player_id'] = $this->playerID;
+    //     $data = PlayerHeroes::all($limit);
+    //     if (!$data) {
+    //         return;
+    //     }
+    //     $list = [];
+    //     foreach ($data as $each) {
+    //         $list[$each->hero_id][] = $each;
+    //     }
+    //     foreach ($list as $heroID => $each) {
+    //         $this->PlayerHeroes[$heroID] = $this->count($each, 1);
+    //         // $this->PlayerHeroes[$heroID] = json_encode($this->count($each, 1), JSON_UNESCAPED_UNICODE);
+    //     }
+    // }
+
     public function countHeroesData()
     {
         $limit = [];
         $this->weekNumber && $limit['week_number'] = $this->weekNumber;
         $this->playerID && $limit['player_id'] = $this->playerID;
-        $data = PlayerHeroes::all($limit);
+        $data = [];
+        PlayerHeroes::where($limit)->chunk(1000, function ($rows) use (&$data) {
+            foreach ($rows as $row) {
+                $data[$row->hero_id][] = $row;
+            }
+        });
         if (!$data) {
             return;
         }
-        $list = [];
-        foreach ($data as $each) {
-            $list[$each->hero_id][] = $each;
-        }
-        foreach ($list as $heroID => $each) {
+        foreach ($data as $heroID => $each) {
             $this->PlayerHeroes[$heroID] = $this->count($each, 1);
-            // $this->PlayerHeroes[$heroID] = json_encode($this->count($each, 1), JSON_UNESCAPED_UNICODE);
         }
+        unset($data);
     }
+
+    // public function countEnemiesData()
+    // {
+    //     if (!$this->playerID) {
+    //         return;
+    //     }
+    //     $limit = [];
+    //     $this->weekNumber && $limit['week_number'] = $this->weekNumber;
+    //     $this->playerID && $limit['player_id|player2_id'] = $this->playerID;
+    //     $data = PlayerEnemies::all($limit);
+    //     if (!$data) {
+    //         return;
+    //     }
+    //     $list = [];
+    //     foreach ($data as $each) {
+    //         $enemyID = $each->player_id == $this->playerID ? $each->player2_id : $each->player_id;
+    //         $list[$enemyID][] = $each;
+    //     }
+    //     foreach ($list as $enemyID => $each) {
+    //         $this->PlayerEnemies[$enemyID] = $this->count($each, 2);
+    //         // $this->PlayerEnemies[$enemyID] = json_encode($this->count($each, 2), JSON_UNESCAPED_UNICODE);
+    //     }
+    // }
 
     public function countEnemiesData()
     {
@@ -112,20 +173,44 @@ class Counter extends Presets
         $limit = [];
         $this->weekNumber && $limit['week_number'] = $this->weekNumber;
         $this->playerID && $limit['player_id|player2_id'] = $this->playerID;
-        $data = PlayerEnemies::all($limit);
+        $data = [];
+        PlayerEnemies::where($limit)->chunk(1000, function ($rows) use (&$data) {
+            foreach ($rows as $row) {
+                $enemyID = $row->player_id == $this->playerID ? $row->player2_id : $row->player_id;
+                $data[$enemyID][] = $row;
+            }
+        });
         if (!$data) {
             return;
         }
-        $list = [];
-        foreach ($data as $each) {
-            $enemyID = $each->player_id == $this->playerID ? $each->player2_id : $each->player_id;
-            $list[$enemyID][] = $each;
-        }
-        foreach ($list as $enemyID => $each) {
+        foreach ($data as $enemyID => $each) {
             $this->PlayerEnemies[$enemyID] = $this->count($each, 2);
-            // $this->PlayerEnemies[$enemyID] = json_encode($this->count($each, 2), JSON_UNESCAPED_UNICODE);
         }
+        unset($data);
     }
+
+    // public function countMatesData()
+    // {
+    //     if (!$this->playerID) {
+    //         return;
+    //     }
+    //     $limit = [];
+    //     $this->weekNumber && $limit['week_number'] = $this->weekNumber;
+    //     $this->playerID && $limit['player_id|player2_id'] = $this->playerID;
+    //     $data = PlayerMates::all($limit);
+    //     if (!$data) {
+    //         return;
+    //     }
+    //     $list = [];
+    //     foreach ($data as $each) {
+    //         $mateID = $each->player_id == $this->playerID ? $each->player2_id : $each->player_id;
+    //         $list[$mateID][] = $each;
+    //     }
+    //     foreach ($list as $mateID => $each) {
+    //         $this->PlayerMates[$mateID] = $this->count($each, 3);
+    //         // $this->PlayerMates[$mateID] = json_encode($this->count($each, 3), JSON_UNESCAPED_UNICODE);
+    //     }
+    // }
 
     public function countMatesData()
     {
@@ -135,19 +220,21 @@ class Counter extends Presets
         $limit = [];
         $this->weekNumber && $limit['week_number'] = $this->weekNumber;
         $this->playerID && $limit['player_id|player2_id'] = $this->playerID;
-        $data = PlayerMates::all($limit);
+        // $data = PlayerMates::all($limit);
+        $data = [];
+        PlayerMates::where($limit)->chunk(1000, function ($rows) use (&$data) {
+            foreach ($rows as $row) {
+                $mateID = $row->player_id == $this->playerID ? $row->player2_id : $row->player_id;
+                $data[$mateID][] = $row;
+            }
+        });
         if (!$data) {
             return;
         }
-        $list = [];
-        foreach ($data as $each) {
-            $mateID = $each->player_id == $this->playerID ? $each->player2_id : $each->player_id;
-            $list[$mateID][] = $each;
-        }
-        foreach ($list as $mateID => $each) {
+        foreach ($data as $mateID => $each) {
             $this->PlayerMates[$mateID] = $this->count($each, 3);
-            // $this->PlayerMates[$mateID] = json_encode($this->count($each, 3), JSON_UNESCAPED_UNICODE);
         }
+        unset($data);
     }
 
     protected function count($data, $itemKey)

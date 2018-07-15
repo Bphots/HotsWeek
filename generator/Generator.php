@@ -4,6 +4,8 @@ namespace hotsweek\generator;
 use hotsweek\generator\Counter;
 use app\hotsweek\model\Period;
 
+ini_set('memory_limit', '-1');
+
 class Generator
 {
     protected $date;
