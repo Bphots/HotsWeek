@@ -18,6 +18,7 @@ class ParseBattleReportCore
     use \hotsweek\parser\mapping\Heroes;
     use \hotsweek\parser\mapping\GameModes;
 
+    protected $outdated;
     protected $gameModeLimit;
     protected $timestamp;
     protected $periodID;
@@ -28,8 +29,9 @@ class ParseBattleReportCore
     protected $contentPlayers;
     protected $players;
 
-    public function __construct($content)
+    public function __construct($content, $outdated)
     {
+        $this->outdated = $outdated;
         $this->gameModeLimit = array_keys($this->gameModesMapping);
         $this->timestamp = strtotime($content['Timestamp']);
         $this->periodID = Period::order('ReplayBuild desc')->where('ReplayBuild', '<=', $content['ReplayBuild'])->value('id');
@@ -51,16 +53,20 @@ class ParseBattleReportCore
         } elseif (!in_array($this->contentBase['GameMode'], $this->gameModeLimit)) {
             return false;
         }
-        foreach ($this->players as $key => $player) {
-            $personal = $this->contentPlayers[$key];
-            $this->parseBaseData($player, $personal);
-            $this->parseHeroesData($player, $personal);
-            $this->parseEnemiesData($player, $personal);
-            $this->parseMatesData($player, $personal);
+        if ($this->outdated !== 2) {
+            foreach ($this->players as $key => $player) {
+                $personal = $this->contentPlayers[$key];
+                $this->parseBaseData($player, $personal);
+                $this->parseHeroesData($player, $personal);
+                $this->parseEnemiesData($player, $personal);
+                $this->parseMatesData($player, $personal);
+            }
         }
         $hookData = [
+            'date' => $this->date,
             'weekNumber' => $this->weekNumber,
             'content' => $this->content,
+            'outdated' => $this->outdated,
         ];
         Hook::listen('BattleReportParsingCompleted', $hookData);
         return true;

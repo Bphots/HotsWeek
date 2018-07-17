@@ -49,7 +49,7 @@ class ParseBattleReport
         $report->status = 0;
         $report->save();
         if ($content) {
-            $parser = new ParseBattleReportCore($content);
+            $parser = new ParseBattleReportCore($content, $report->outdated);
             $parser->build();
             unset($parser);
         }
