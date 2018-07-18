@@ -4,6 +4,8 @@ namespace hotsweek;
 use app\hotsweek\model\PlayerBase;
 use hotsweek\generator\Generator;
 
+defined('IS_HOTSWEEK_GENERATOR') or define('IS_HOTSWEEK_GENERATOR', true);
+
 class WeeklyGenerator
 {
     protected $weekNumber;
@@ -11,6 +13,9 @@ class WeeklyGenerator
 
     public function __construct($weekNumber)
     {
+        $a = new PlayerBase;
+        dump($a->connection);
+        exit;
         // Last weekNumber
         $this->weekNumber = $weekNumber;
         $this->generator = new Generator($this->weekNumber);
