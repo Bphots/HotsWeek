@@ -106,7 +106,8 @@ class ParseBattleReportCore
     protected function parseBaseData($player, $personal)
     {
         $baseData = $player->baseData()->where([
-            'date' => $this->date,
+            'date'          =>  $this->date,
+            'week_number'   =>  $this->weekNumber,
         ])->find();
         if (!$baseData) {
             $player->baseData()->save([
@@ -116,6 +117,7 @@ class ParseBattleReportCore
             ]);
             $baseData = $player->baseData()->where([
                 'date'          =>  $this->date,
+                'week_number'   =>  $this->weekNumber,
             ])->find();
         }
         $builder = new BaseDataBuilder($baseData, $this->contentBase, $personal);
