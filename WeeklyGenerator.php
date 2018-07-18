@@ -11,9 +11,6 @@ class WeeklyGenerator
 
     public function __construct($weekNumber)
     {
-        $a = new PlayerBase;
-        dump($a->connection);
-        exit;
         // Last weekNumber
         $this->weekNumber = $weekNumber;
         $this->generator = new Generator($this->weekNumber);
