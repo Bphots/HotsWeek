@@ -9,20 +9,28 @@ include_once __DIR__ . '/../parser/Constants.php';
 
 class IsWinByAdvice extends BuilderMappings
 {
+    protected $date;
     protected $weekNumber;
     protected $content;
     protected $map;
     protected $mapID;
     protected $gameMode;
     protected $heroList;
+    protected $isWinner;
     protected $heroPlayers;
-    protected $recordField          =   'win_by_advice';
-    protected $recordFieldGameMode  =   'GameMode_win_by_advice';
-    protected $banIndex             =   [0, 2, 10, 1, 3, 9];
-    protected $gameModeLimit        =   [GAMEMODE_HEROLEAGUE, GAMEMODE_TEAMLEAGUE, GAMEMODE_UNRANKEDDRAFT];
+    protected $recordFieldLose          =   'lose_by_advice';
+    protected $recordFieldWin           =   'win_by_advice';
+    protected $recordFieldLoseGameMode  =   'GameMode_lose_by_advice';
+    protected $recordFieldWinGameMode   =   'GameMode_win_by_advice';
+    protected $banIndex                 =   [0, 2, 10, 1, 3, 9];
+    protected $gameModeLimit            =   [GAMEMODE_HEROLEAGUE, GAMEMODE_TEAMLEAGUE, GAMEMODE_UNRANKEDDRAFT];
 
     public function run(&$data)
     {
+        if ($data['outdated'] === 1) {
+            return false;
+        }
+        $this->date = $data['date'];
         $this->weekNumber = $data['weekNumber'];
         $this->content = $data['content'];
         if (!$this->getGameMode() || !$this->getMap() || !$this->getHeroList() || !$this->getHeroPlayers()) {
@@ -52,19 +60,20 @@ class IsWinByAdvice extends BuilderMappings
     {
         $heroID = $this->heroList[$index];
         $playerInfo = $this->heroPlayers[$heroID];
-        $playerBase = $playerInfo->baseData()->where('week_number', $this->weekNumber)->find();
+        $playerBase = $playerInfo->baseData()->where('date', $this->date)->find();
         $playerHeroes = $playerInfo->heroesData()->where('week_number', $this->weekNumber)->find();
-        $this->setInc($playerBase);
-        $this->setInc($playerHeroes);
+        $isWinner = $this->isWinner[$heroID];
+        $this->setInc($playerBase, $isWinner);
+        $this->setInc($playerHeroes, $isWinner);
     }
 
-    protected function setInc($data)
+    protected function setInc($data, $isWinner)
     {
         if (!$data) {
             return false;
         }
-        $field = $this->recordField;
-        $fieldGameMode = $this->recordFieldGameMode;
+        $field = $isWinner ? $this->recordFieldWin : $this->recordFieldLose;
+        $fieldGameMode = $isWinner ? $this->recordFieldWinGameMode : $this->recordFieldLoseGameMode;
         $data->$field++;
         $tmp = @json_decode($data->$fieldGameMode, true) ? : [];
         isset($tmp[$this->gameMode]) or $tmp[$this->gameMode] = 0;
@@ -123,6 +132,7 @@ class IsWinByAdvice extends BuilderMappings
                 return false;
             }
             $this->heroPlayers[$heroID] = $playerInfo;
+            $this->isWinner[$heroID] = $player['IsWinner'];
         }
         return true;
     }
