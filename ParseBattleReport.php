@@ -45,11 +45,11 @@ class ParseBattleReport
     {
         $report = $this->reports[$key];
         $content = @json_decode(file_get_contents($this->files[$key]), true);
-        unlink($this->files[$key]);
+        // unlink($this->files[$key]);
         $report->status = 0;
         $report->save();
         if ($content) {
-            $parser = new ParseBattleReportCore($content);
+            $parser = new ParseBattleReportCore($content, $report->outdated);
             $parser->build();
             unset($parser);
         }
