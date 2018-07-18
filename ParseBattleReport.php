@@ -21,7 +21,9 @@ class ParseBattleReport
         }
         $files = [];
         foreach ($reports as $key => $report) {
-            $files[$key] = BATTLEREPORT_ROOT . $report->date . DS . $report->save_name;
+            $fingerprint = $report->fingerprint;
+            $short = substr($fingerprint, 0, 2);
+            $files[$key] = BATTLEREPORT_ROOT . $report->date . DS . $short . DS . $report->save_name;
         }
         $this->reports = $reports;
         $this->files = $files;
