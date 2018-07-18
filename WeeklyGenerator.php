@@ -4,8 +4,6 @@ namespace hotsweek;
 use app\hotsweek\model\PlayerBase;
 use hotsweek\generator\Generator;
 
-defined('IS_HOTSWEEK_GENERATOR') or define('IS_HOTSWEEK_GENERATOR', true);
-
 class WeeklyGenerator
 {
     protected $weekNumber;
