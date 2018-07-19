@@ -33,14 +33,20 @@ class RankingBuilder extends Presets
             if ($data) {
                 $data = @json_decode($data, true) ?: [];
                 if (isset($data[FILENAME_BASE])) {
-                    $this->compare($this->PlayerBase, $data[FILENAME_BASE], $playerID);
+                    $_data = $data[FILENAME_BASE];
+                    $gameTotal = $_data['0-1'][FUNC_SUM]; //game_total
+                    $this->compare($this->PlayerBase[FUNC_SUM], $_data, $playerID);
+                    $this->compare($this->PlayerBase[FUNC_AVG], $_data, $playerID, $gameTotal);
                 }
                 if (isset($data[FILENAME_HEROES])) {
                     foreach ($data[FILENAME_HEROES] as $heroID => $hero) {
                         if (!isset($data[FILENAME_HEROES][$heroID])) {
                             $data[FILENAME_HEROES][$heroID] = [];
                         }
-                        $this->compare($this->PlayerHeroes, $data[FILENAME_HEROES][$heroID], $playerID);
+                        $_data = $data[FILENAME_HEROES][$heroID];
+                        $gameTotal = $_data['0-1'][FUNC_SUM]; //game_total
+                        $this->compare($this->PlayerHeroes[$heroID][FUNC_SUM], $_data, $playerID);
+                        $this->compare($this->PlayerHeroes[$heroID][FUNC_AVG], $_data, $playerID, $gameTotal);
                     }
                 }
             }
@@ -64,7 +70,7 @@ class RankingBuilder extends Presets
         $this->playerIDs = $playerIDs;
     }
 
-    private function compare(&$list, $data, $playerID)
+    private function compare(&$list, $data, $playerID, $divisor = 1)
     {
         foreach ($data as $key => $value) {
             if (!isset($value['sum'])) {
@@ -72,9 +78,11 @@ class RankingBuilder extends Presets
             }
             if (is_array($value['sum'])) {
                 foreach ($value['sum'] as $_key => $_value) {
+                    $_value = (int)($_value / $divisor);
                     $this->_compare($list[$key], $_key, $_value, $playerID);
                 }
             } else {
+                $value['sum'] = (int)($value['sum'] / $divisor);
                 $this->_compare($list, $key, $value['sum'], $playerID);
             }
         }
