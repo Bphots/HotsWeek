@@ -78,11 +78,11 @@ class RankingBuilder extends Presets
             }
             if (is_array($value['sum'])) {
                 foreach ($value['sum'] as $_key => $_value) {
-                    $divisor and $_value = (int)($_value / $divisor);
+                    $_value = $divisor ? (int)($_value / $divisor) : 0;
                     $this->_compare($list[$key], $_key, $_value, $playerID);
                 }
             } else {
-                $divisor and $value['sum'] = (int)($value['sum'] / $divisor);
+                $value['sum'] = $divisor ? (int)($value['sum'] / $divisor) : 0;
                 $this->_compare($list, $key, $value['sum'], $playerID);
             }
         }
