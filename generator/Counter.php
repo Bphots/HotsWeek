@@ -93,6 +93,24 @@ class Counter extends Presets
         unset($data);
     }
 
+    public function countGlobalRankingsData()
+    {
+        $limit = [];
+        $this->weekNumber && $limit['week_number'] = $this->weekNumber;
+        $this->playerID && $limit['player_id'] = $this->playerID;
+        $data = [];
+        PlayerRankings::where($limit)->chunk(1000, function ($rows) use (&$data) {
+            foreach ($rows as $row) {
+                $this->mergePlayers($data, $row, 0);
+            }
+        });
+        if (!$data) {
+            return;
+        }
+        $this->PlayerRankings = $this->countOccurrence($data, 0);
+        unset($data);
+    }
+
     protected function mergePlayers(&$list, $data, $itemKey)
     {
         isset($list[$data->date]) or $list[$data->date] = [];
@@ -277,6 +295,35 @@ class Counter extends Presets
             }
         }
         return $return;
+    }
+
+    protected function countOccurrence($data, $itemKey)
+    {
+        $return = [];
+        foreach ($this->presets as $key1 => $preset) {
+            if (!$preset[2][$itemKey]) {
+                continue;
+            }
+            $fields = $preset[0];
+            $isJson = $preset[1];
+            $type = $preset[2][$itemKey];
+            foreach ($fields as $key2 => $field) {
+                $alias = $this->alias($key1, $key2);
+                $this->countOccurrence($return, $data, $field, $type, $alias);
+            }
+        }
+        return $return;
+    }
+    
+    protected function countOccurrence(&$return, $data, $field, $type, $alias = null)
+    {
+        $count = 0;
+        $name = $alias ?: $field;
+        foreach ($data as $each) {
+            if ($each[$field] > 0)
+                $count = $count + 1
+        }
+        $return[$name][FUNC_SUM] = $count;
     }
 
     protected function countNumber(&$return, $data, $field, $type, $alias = null)
