@@ -89,7 +89,7 @@ class Counter extends Presets
         if (!$data) {
             return;
         }
-        $this->PlayerBase = $this->count($data, 0);
+        $this->PlayerRankings = $this->count($data, 0);
         unset($data);
     }
 
