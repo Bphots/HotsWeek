@@ -265,7 +265,7 @@ class Counter extends Presets
 
     public function countGlobalRankingsPlayerNumbers()
     {
-        $count = [];
+        $result = [];
         $limit = [];
         $itemKey = 4;
         $this->weekNumber && $limit['week_number'] = $this->weekNumber;
@@ -280,16 +280,20 @@ class Counter extends Presets
             $fields = $preset[0];
             foreach ($fields as $key2 => $field) {
                 $alias = $this->alias($key1, $key2);
-                foreach ($datas as $data) {
-                    if ($data->$field) {
-                        isset($count[$alias]) or $count[$alias] = 0;
-                        $count[$alias]++;
-                    }
-                }
+                $result[$alias] = [
+                    PlayerRankings::where(array_merge($limit, [$field => ['>', 0]]))->count(),
+                    PlayerRankings::where($limit)->limit(100)->order("$field asc")->column('player_id'),
+                ];
+                // foreach ($datas as $data) {
+                //     if ($data->$field) {
+                //         isset($result[$alias]) or $result[$alias] = 0;
+                //         $result[$alias]++;
+                //     }
+                // }
             }
         }
-        $this->PlayerRankings = $count;
-        unset($count);
+        $this->PlayerRankings = $result;
+        unset($result);
         unset($data);
     }
 
