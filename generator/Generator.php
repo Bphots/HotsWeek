@@ -54,6 +54,7 @@ class Generator
         $counter->countHeroesData();
         $counter->countEnemiesData();
         $counter->countMatesData();
+        $counter->countRankingsData();
         $counter->save($path);
     }
 }

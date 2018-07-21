@@ -6,6 +6,7 @@ use app\hotsweek\model\PlayerBase;
 use app\hotsweek\model\PlayerHeroes;
 use app\hotsweek\model\PlayerEnemies;
 use app\hotsweek\model\PlayerMates;
+use app\hotsweek\model\PlayerRankings;
 
 class Counter extends Presets
 {
@@ -16,6 +17,7 @@ class Counter extends Presets
     protected $PlayerEnemies;
     protected $PlayerMates;
     protected $PlayerInfo;
+    protected $PlayerRankings;
 
     public function setWeek($weekNumber)
     {
@@ -62,6 +64,24 @@ class Counter extends Presets
         $this->playerID && $limit['player_id'] = $this->playerID;
         $data = [];
         PlayerBase::where($limit)->chunk(1000, function ($rows) use (&$data) {
+            foreach ($rows as $row) {
+                $this->mergePlayers($data, $row, 0);
+            }
+        });
+        if (!$data) {
+            return;
+        }
+        $this->PlayerBase = $this->count($data, 0);
+        unset($data);
+    }
+
+    public function countRankingsData()
+    {
+        $limit = [];
+        $this->weekNumber && $limit['week_number'] = $this->weekNumber;
+        $this->playerID && $limit['player_id'] = $this->playerID;
+        $data = [];
+        PlayerRankings::where($limit)->chunk(10, function ($rows) use (&$data) {
             foreach ($rows as $row) {
                 $this->mergePlayers($data, $row, 0);
             }

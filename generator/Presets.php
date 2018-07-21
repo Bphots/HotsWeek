@@ -15,15 +15,16 @@ const FILENAME_BASE = 'PlayerBase';
 const FILENAME_HEROES = 'PlayerHeroes';
 const FILENAME_ENEMIES = 'PlayerEnemies';
 const FILENAME_MATES = 'PlayerMates';
+const FILENAME_RANKINGS = 'PlayerRankings';
 const UNKNOWN = 'Unknown';
 
 class Presets
 {
-    protected $items = [FILENAME_PLAYERINFO, FILENAME_BASE, FILENAME_HEROES, FILENAME_ENEMIES, FILENAME_MATES];
+    protected $items = [FILENAME_PLAYERINFO, FILENAME_BASE, FILENAME_HEROES, FILENAME_ENEMIES, FILENAME_MATES, FILENAME_RANKINGS];
     protected $presets = [
         // 0: Field name
         // 1: Is it JSON ?
-        // 2: Items (base,heroes,enemies,mates) - Methods (sum,avg,max,min)
+        // 2: Items (base,heroes,enemies,mates,rankings) - Methods (sum,avg,max,min)
         [[
             'game_length', 'game_total', 'game_win',
             'game_length_QuickMatch', 'game_length_HeroLeague',
@@ -33,12 +34,12 @@ class Presets
             'game_win_QuickMatch', 'game_win_HeroLeague',
             'game_win_TeamLeague', 'game_win_UnrankedDraft',
         ], false, [
-            [1, 1, 1, 1], [1, 0, 0, 0], [1, 0, 0, 0], [1, 0, 0, 0]
+            [1, 1, 1, 1], [1, 0, 0, 0], [1, 0, 0, 0], [1, 0, 0, 0], false
         ]],
         [[
             'party_total', 'party_win',
         ], false, [
-            [1, 1, 1, 1], [1, 0, 0, 0], false, [1, 0, 0, 0]
+            [1, 1, 1, 1], [1, 0, 0, 0], false, [1, 0, 0, 0], false
         ]],
         [[
             'team1_count', 'Level', 'Takedowns', 'SoloKills',
@@ -72,23 +73,35 @@ class Presets
             'party_total_3', 'party_win_3', 'party_total_4', 'party_win_4',
             'party_total_5', 'party_win_5', 'win_by_advice'
         ], false, [
-            [1, 1, 1, 1], false, false, false
+            [1, 1, 1, 1], false, false, false, false
         ]],
         [[
             'maps_length', 'maps_total', 'maps_win', 'GameMode_win_by_advice'
         ], true, [
-            [1, 1, 1, 1], false, false, false
+            [1, 1, 1, 1], false, false, false, false
         ]],
         [[
             'Level_count', 'Takedowns_count', 'SoloKills_count',
             'Assists_count', 'Deaths_count', 'HighestKillStreak_count',
             'MatchAwards'
         ], true, [
-            [1, 0, 0, 0], false, false, false
+            [1, 0, 0, 0], false, false, false, false
         ]],
         [['last_game_time'], false, [
-            [0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 1, 0]
+            [0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 1, 0], false
         ]],
+        [[
+            'rank_avg_game_length', 'rank_total_game_length', 'rank_total_game',
+            'rank_total_win', 'rank_win_rate', 'rank_avg_solo_kills',
+            'rank_avg_takedowns', 'rank_avg_deaths', 'rank_avg_experience',
+            'rank_avg_hero_damage', 'rank_avg_siege_damage', 'rank_avg_damage_taken',
+            'rank_avg_camp', 'rank_avg_teamfight_damage', 'rank_avg_teamfight_damage_taken',
+            'rank_avg_outnumbered_deaths', 'rank_win_rate_quickMatch', 'rank_win_rate_unrankedDraft',
+            'rank_win_rate_teamLeague', 'rank_win_rate_heroLeague'
+        ], false, [
+            false, false, false, false, [1, 0, 0, 0]
+        ]],
+        
     ];
 
     static public function __callStatic($name, $args)
