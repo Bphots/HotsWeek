@@ -28,7 +28,7 @@ class Generator
         $counter->setWeek($this->weekNumber);
         $counter->countBaseData();
         $counter->countHeroesData();
-        $counter->countGlobalRankingsData();
+        $counter->countGlobalRankingsPlayerNumbers();
         $counter->save($path);
     }
 
