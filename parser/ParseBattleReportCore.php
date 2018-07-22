@@ -23,6 +23,7 @@ class ParseBattleReportCore
     protected $timestamp;
     protected $periodID;
     protected $weekNumber;
+    protected $thisWeekNumber;
     protected $date;
     protected $content;
     protected $contentBase;
@@ -231,6 +232,8 @@ class ParseBattleReportCore
 
     protected function checkWeekNumber()
     {
-        return $this->weekNumber >= WEEK_MIN;
+        $delta = 3600;
+        $_weekNumber = floor((time() - $delta + 345600) / 604800) + 1;
+        return $this->weekNumber >= WEEK_MIN && ($this->thisWeekNumber === $this->weekNumber || $_weekNumber === $this->thisWeekNumber - 1);
     }
 }
