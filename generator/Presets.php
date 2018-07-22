@@ -97,7 +97,7 @@ class Presets
             'rank_avg_hero_damage', 'rank_avg_siege_damage', 'rank_avg_damage_taken',
             'rank_avg_camp', 'rank_avg_teamfight_damage', 'rank_avg_teamfight_damage_taken',
             'rank_avg_outnumbered_deaths', 'rank_win_rate_quickMatch', 'rank_win_rate_unrankedDraft',
-            'rank_win_rate_teamLeague', 'rank_win_rate_heroLeague'
+            'rank_win_rate_teamLeague', 'rank_win_rate_heroLeague', 'rank_kda'
         ], false, [
             false, false, false, false, [1, 0, 0, 0]
         ]],
