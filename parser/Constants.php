@@ -101,3 +101,5 @@ const HERO_MAIE = 77;
 const HERO_FENX = 78;
 const HERO_DECK = 79;
 const HERO_YREL = 80;
+const HERO_WHIT = 81;
+const HERO_MEPH = 82;
