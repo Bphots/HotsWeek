@@ -16,6 +16,11 @@ class WeeklyGenerator
         $this->generator = new Generator($this->weekNumber);
     }
 
+    public function __destruct()
+    {
+        unset($this->generator);
+    }
+
     public function global()
     {
         $this->generator->countGlobal();
