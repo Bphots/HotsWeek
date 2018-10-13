@@ -2,15 +2,14 @@
 namespace hotsweek\generator;
 
 use app\hotsweek\model\Player;
-use app\hotsweek\model\PlayerBase;
-use app\hotsweek\model\PlayerHeroes;
-use app\hotsweek\model\PlayerEnemies;
-use app\hotsweek\model\PlayerMates;
-use app\hotsweek\model\PlayerRankings;
+use app\hotsweek\model\TempPlayerBase as PlayerBase;
+use app\hotsweek\model\TempPlayerHeroes as PlayerHeroes;
+use app\hotsweek\model\TempPlayerEnemies as PlayerEnemies;
+use app\hotsweek\model\TempPlayerMates as PlayerMates;
+use app\hotsweek\model\TempPlayerRankings as PlayerRankings;
 
 class Counter extends Presets
 {
-    protected $weekNumber;
     protected $playerID;
     protected $PlayerBase;
     protected $PlayerHeroes;
@@ -18,11 +17,6 @@ class Counter extends Presets
     protected $PlayerMates;
     protected $PlayerInfo;
     protected $PlayerRankings;
-
-    public function setWeek($weekNumber)
-    {
-        $this->weekNumber = $weekNumber;
-    }
 
     public function setPlayer($playerID)
     {
@@ -40,27 +34,9 @@ class Counter extends Presets
         ];
     }
 
-    // public function countBaseData()
-    // {
-    //     $limit = [];
-    //     $this->weekNumber && $limit['week_number'] = $this->weekNumber;
-    //     $this->playerID && $limit['player_id'] = $this->playerID;
-    //     $data = PlayerBase::all($limit);
-    //     if (!$data) {
-    //         return;
-    //     }
-    //     $dataMerge = [];
-    //     foreach ($data as $each) {
-    //         $this->mergePlayers($dataMerge, $each, 0);
-    //     }
-    //     $this->PlayerBase = $this->count($dataMerge, 0);
-    //     // $this->PlayerBase = json_encode($this->count($data, 0), JSON_UNESCAPED_UNICODE);
-    // }
-
     public function countBaseData()
     {
         $limit = [];
-        $this->weekNumber && $limit['week_number'] = $this->weekNumber;
         $this->playerID && $limit['player_id'] = $this->playerID;
         $data = [];
         PlayerBase::where($limit)->chunk(1000, function ($rows) use (&$data) {
@@ -104,30 +80,10 @@ class Counter extends Presets
         }
         $list[$data->date] = $tmp;
     }
-    
-    // public function countHeroesData()
-    // {
-    //     $limit = [];
-    //     $this->weekNumber && $limit['week_number'] = $this->weekNumber;
-    //     $this->playerID && $limit['player_id'] = $this->playerID;
-    //     $data = PlayerHeroes::all($limit);
-    //     if (!$data) {
-    //         return;
-    //     }
-    //     $list = [];
-    //     foreach ($data as $each) {
-    //         $list[$each->hero_id][] = $each;
-    //     }
-    //     foreach ($list as $heroID => $each) {
-    //         $this->PlayerHeroes[$heroID] = $this->count($each, 1);
-    //         // $this->PlayerHeroes[$heroID] = json_encode($this->count($each, 1), JSON_UNESCAPED_UNICODE);
-    //     }
-    // }
 
     public function countHeroesData()
     {
         $limit = [];
-        $this->weekNumber && $limit['week_number'] = $this->weekNumber;
         $this->playerID && $limit['player_id'] = $this->playerID;
         $data = [];
         PlayerHeroes::where($limit)->chunk(1000, function ($rows) use (&$data) {
@@ -144,36 +100,12 @@ class Counter extends Presets
         unset($data);
     }
 
-    // public function countEnemiesData()
-    // {
-    //     if (!$this->playerID) {
-    //         return;
-    //     }
-    //     $limit = [];
-    //     $this->weekNumber && $limit['week_number'] = $this->weekNumber;
-    //     $this->playerID && $limit['player_id|player2_id'] = $this->playerID;
-    //     $data = PlayerEnemies::all($limit);
-    //     if (!$data) {
-    //         return;
-    //     }
-    //     $list = [];
-    //     foreach ($data as $each) {
-    //         $enemyID = $each->player_id == $this->playerID ? $each->player2_id : $each->player_id;
-    //         $list[$enemyID][] = $each;
-    //     }
-    //     foreach ($list as $enemyID => $each) {
-    //         $this->PlayerEnemies[$enemyID] = $this->count($each, 2);
-    //         // $this->PlayerEnemies[$enemyID] = json_encode($this->count($each, 2), JSON_UNESCAPED_UNICODE);
-    //     }
-    // }
-
     public function countEnemiesData()
     {
         if (!$this->playerID) {
             return;
         }
         $limit = [];
-        $this->weekNumber && $limit['week_number'] = $this->weekNumber;
         $this->playerID && $limit['player_id|player2_id'] = $this->playerID;
         $data = [];
         PlayerEnemies::where($limit)->chunk(1000, function ($rows) use (&$data) {
@@ -191,36 +123,12 @@ class Counter extends Presets
         unset($data);
     }
 
-    // public function countMatesData()
-    // {
-    //     if (!$this->playerID) {
-    //         return;
-    //     }
-    //     $limit = [];
-    //     $this->weekNumber && $limit['week_number'] = $this->weekNumber;
-    //     $this->playerID && $limit['player_id|player2_id'] = $this->playerID;
-    //     $data = PlayerMates::all($limit);
-    //     if (!$data) {
-    //         return;
-    //     }
-    //     $list = [];
-    //     foreach ($data as $each) {
-    //         $mateID = $each->player_id == $this->playerID ? $each->player2_id : $each->player_id;
-    //         $list[$mateID][] = $each;
-    //     }
-    //     foreach ($list as $mateID => $each) {
-    //         $this->PlayerMates[$mateID] = $this->count($each, 3);
-    //         // $this->PlayerMates[$mateID] = json_encode($this->count($each, 3), JSON_UNESCAPED_UNICODE);
-    //     }
-    // }
-
     public function countMatesData()
     {
         if (!$this->playerID) {
             return;
         }
         $limit = [];
-        $this->weekNumber && $limit['week_number'] = $this->weekNumber;
         $this->playerID && $limit['player_id|player2_id'] = $this->playerID;
         // $data = PlayerMates::all($limit);
         $data = [];
@@ -244,7 +152,6 @@ class Counter extends Presets
         $result = [];
         $limit = [];
         $itemKey = 4;
-        $this->weekNumber && $limit['week_number'] = $this->weekNumber;
         $this->playerID && $limit['player_id'] = $this->playerID;
         $data = PlayerRankings::where($limit)->find();
         if (!$data) {
@@ -268,7 +175,6 @@ class Counter extends Presets
         $result = [];
         $limit = [];
         $itemKey = 4;
-        $this->weekNumber && $limit['week_number'] = $this->weekNumber;
         $datas = PlayerRankings::where($limit)->select();
         if (!$datas) {
             return;
