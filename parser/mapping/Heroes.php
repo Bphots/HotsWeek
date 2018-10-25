@@ -542,5 +542,11 @@ trait Heroes
         "메피스토" => HERO_MEPH,
         "Méphisto" => HERO_MEPH,
         "Мефисто" => HERO_MEPH,
+        "Mal'Ganis" => HERO_MALG,
+        "Mal’Ganis" => HERO_MALG,
+        "Мал'Ганис" => HERO_MALG,
+        "玛尔加尼斯" => HERO_MALG,
+        "瑪爾加尼斯" => HERO_MALG,
+        "말가니스" => HERO_MALG,
     ];
 }
