@@ -15,6 +15,14 @@ class Generator
     protected $rootPath;
     protected $savePath;
 
+    protected $readTime = [
+        'buildRanking' => 0,
+    ];
+    protected $saveTime = [
+        'countGlobal' => 0,
+        'buildRanking' => 0,
+        'countPersonal' => 0,
+    ];
     protected $active = false;
 
     public function __construct($weekNumber)
@@ -65,7 +73,8 @@ class Generator
         $counter->countBaseData();
         $counter->countHeroesData();
         $counter->countGlobalRankingsPlayerNumbers();
-        $counter->save($path);
+        $saveTime = $counter->save($path);
+        $saveTime and $this->saveTime['countGlobal'] += $saveTime;
     }
 
     public function buildRanking()
@@ -77,7 +86,10 @@ class Generator
         $ranking = new RankingBuilder;
         $ranking->setPath($this->rootPath, $except);
         $ranking->rank();
-        $ranking->save($path, 'ranking');
+        $saveTime = $ranking->save($path, 'ranking');
+        $saveTime and $this->saveTime['buildRanking'] += $saveTime;
+        $readTime = $ranking->getFileTime();
+        $readTime and $this->readTime['buildRanking'] += $readTime;
     }
 
     public function countPersonal($playerID)
@@ -95,6 +107,17 @@ class Generator
         $counter->countEnemiesData();
         $counter->countMatesData();
         $counter->countRankingsData();
-        $counter->save($path);
+        $saveTime = $counter->save($path);
+        $saveTime and $this->saveTime['countPersonal'] += $saveTime;
+    }
+
+    public function getReadTime()
+    {
+        return $this->readTime;
+    }
+
+    public function getSaveTime()
+    {
+        return $this->saveTime;
     }
 }

@@ -144,10 +144,12 @@ class Presets
         if (empty($data)) {
             return false;
         }
+        $t1 = microtime(true);
         // $this->_save($data, $path);
         is_dir($path) or mkdir($path, 0755, true);
         file_put_contents($path . $fileName . SAVE_EXT, json_encode($data, JSON_UNESCAPED_UNICODE));
-        return true;
+        $t2 = microtime(true);
+        return $t2 - $t1;
     }
 
     // protected function _save($data, $path)

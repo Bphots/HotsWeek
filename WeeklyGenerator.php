@@ -9,6 +9,8 @@ class WeeklyGenerator
     protected $weekNumber;
     protected $generator;
 
+    protected $fileReadTimeGetPlayersFinished = 0;
+
     public function __construct($weekNumber)
     {
         // Last weekNumber
@@ -40,6 +42,18 @@ class WeeklyGenerator
         }
     }
 
+    public function getGeneratorReadTime()
+    {
+        $readTime = $this->generator->getReadTime();
+        $readTime['getPlayersFinished'] = $this->fileReadTimeGetPlayersFinished;
+        return $readTime;
+    }
+
+    public function getGeneratorSaveTime()
+    {
+        return $this->generator->getSaveTime();
+    }
+
     protected function getPlayers()
     {
         $playersAll = $this->getPlayersAll();
@@ -56,6 +70,7 @@ class WeeklyGenerator
 
     private function getPlayersFinished()
     {
+        $t1 = microtime(true);
         $playerIDs = [];
         $path = ROOT_PATH . 'weeklyreport' . DS . $this->weekNumber;
         if (is_dir($path)) {
@@ -70,6 +85,8 @@ class WeeklyGenerator
                 }
             }
         }
+        $t2 = microtime(true);
+        $this->fileReadTimeGetPlayersFinished += $t2 - $t1;
         return $playerIDs;
     }
 }

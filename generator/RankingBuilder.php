@@ -13,6 +13,8 @@ class RankingBuilder extends Presets
     protected $PlayerBase = [];
     protected $PlayerHeroes = [];
 
+    protected $fileTime = 0;
+
     public function setPath($rootPath, $except = [])
     {
         $this->rootPath = $rootPath;
@@ -26,10 +28,13 @@ class RankingBuilder extends Presets
             // For EXT3 file system
             $groupID = floor($playerID / 1000);
             $fileName = $this->rootPath . $groupID . DS . $playerID . DS . 'data' . SAVE_EXT;
+            $t1 = microtime(true);
             if (!file_exists($fileName)) {
                 continue;
             }
             $data = @file_get_contents($fileName);
+            $t2 = microtime(true);
+            $this->fileTime += $t2 - $t1;
             if ($data) {
                 $data = @json_decode($data, true) ?: [];
                 if (isset($data[FILENAME_BASE])) {
@@ -51,6 +56,11 @@ class RankingBuilder extends Presets
                 }
             }
         }
+    }
+
+    public function getFileTime()
+    {
+        return $this->fileTime;
     }
 
     private function getPlayerIDs()
