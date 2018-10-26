@@ -103,3 +103,4 @@ const HERO_DECK = 79;
 const HERO_YREL = 80;
 const HERO_WHIT = 81;
 const HERO_MEPH = 82;
+const HERO_MALG = 83;
