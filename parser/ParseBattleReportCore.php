@@ -2,6 +2,7 @@
 
 namespace hotsweek\parser;
 
+use think\Log;
 use think\Hook;
 use app\hotsweek\model\Period;
 use app\hotsweek\model\Player;
@@ -44,7 +45,11 @@ class ParseBattleReportCore
         unset($content['Players']);
         $this->contentBase = $content;
         $this->buildParty($this->contentPlayers);
+        // Log::record('------');
+        // $t1 = microtime(true);
         $this->getPlayers();
+        // $t2 = microtime(true);
+        // Log::record('Function getPlayers() finish: ' . ($t2 - $t1));
     }
 
     public function build()
@@ -57,10 +62,19 @@ class ParseBattleReportCore
         if ($this->outdated !== 2) {
             foreach ($this->players as $key => $player) {
                 $personal = $this->contentPlayers[$key];
+                // $t1 = microtime(true);
                 $this->parseBaseData($player, $personal);
+                // $t2 = microtime(true);
+                // Log::record('Function parseBaseData() finish: ' . ($t2 - $t1));
                 $this->parseHeroesData($player, $personal);
+                // $t3 = microtime(true);
+                // Log::record('Function parseHeroesData() finish: ' . ($t3 - $t2));
                 $this->parseEnemiesData($player, $personal);
+                // $t4 = microtime(true);
+                // Log::record('Function parseEnemiesData() finish: ' . ($t4 - $t3));
                 $this->parseMatesData($player, $personal);
+                // $t5 = microtime(true);
+                // Log::record('Function parseMatesData() finish: ' . ($t5 - $t4));
             }
         }
         $hookData = [
@@ -70,6 +84,10 @@ class ParseBattleReportCore
             'outdated' => $this->outdated,
         ];
         Hook::listen('BattleReportParsingCompleted', $hookData);
+        // if (isset($t5)) {
+            // $t6 = microtime(true);
+            // Log::record('Hook BattleReportParsingCompleted finish: ' . ($t6 - $t5));
+        // }
         return true;
     }
 
@@ -109,7 +127,7 @@ class ParseBattleReportCore
         $baseData = $player->baseData()->where([
             'date'          =>  $this->date,
             'week_number'   =>  $this->weekNumber,
-        ])->find();
+        ])->force('PlayerBaseParserIndex')->find();
         if (!$baseData) {
             $player->baseData()->save([
                 'date'          =>  $this->date,
@@ -119,7 +137,7 @@ class ParseBattleReportCore
             $baseData = $player->baseData()->where([
                 'date'          =>  $this->date,
                 'week_number'   =>  $this->weekNumber,
-            ])->find();
+            ])->force('PlayerBaseParserIndex')->find();
         }
         $builder = new BaseDataBuilder($baseData, $this->contentBase, $personal);
         $builder->build();
@@ -135,7 +153,7 @@ class ParseBattleReportCore
         $heroesData = $player->heroesData()->where([
             'hero_id'           =>  $heroID,
             'week_number'       =>  $this->weekNumber,
-        ])->find();
+        ])->force('PlayerHeroesParserIndex')->find();
         if (!$heroesData) {
             $player->heroesData()->save([
                 'hero_id'       =>  $heroID,
@@ -145,7 +163,7 @@ class ParseBattleReportCore
             $heroesData = $player->heroesData()->where([
                 'hero_id'       =>  $heroID,
                 'week_number'   =>  $this->weekNumber,
-            ])->find();
+            ])->force('PlayerHeroesParserIndex')->find();
         }
         $builder = new HeroesDataBuilder($heroesData, $this->contentBase, $personal);
         $builder->build();
@@ -161,24 +179,33 @@ class ParseBattleReportCore
             if ($personal['Team'] == $enemy['Team']) {
                 continue;
             }
+            // $t1 = microtime(true);
             $enemiesData = $player->enemiesData()->where([
                 'player2_id'        =>  $this->players[$key]->id,
                 'week_number'       =>  $this->weekNumber,
-            ])->find();
+            ])->force('PlayerEnemiesParserIndex')->find();
+            // $t2 = microtime(true);
+            // Log::record('parseEnemiesData query #1: ' . ($t2 - $t1));
             if (!$enemiesData) {
                 $player->enemiesData()->save([
                     'player2_id'    =>  $this->players[$key]->id,
                     'period_id'     =>  $this->periodID,
                     'week_number'   =>  $this->weekNumber,
                 ]);
+                // $t3 = microtime(true);
+                // Log::record('parseEnemiesData save: ' . ($t3 - $t2));
                 $enemiesData = $player->enemiesData()->where([
                     'player2_id'    =>  $this->players[$key]->id,
                     'week_number'   =>  $this->weekNumber,
-                ])->find();
+                ])->force('PlayerEnemiesParserIndex')->find();
+                // $t4 = microtime(true);
+                // Log::record('parseEnemiesData query #2: ' . ($t4 - $t3));
             }
             $builder = new EnemiesDataBuilder($enemiesData, $this->contentBase, $personal, $enemy);
             $builder->build();
             unset($builder);
+            // $t5 = microtime(true);
+            // Log::record('parseEnemiesData build finish: ' . ($t5 - $t4));
         }
     }
 
@@ -191,24 +218,33 @@ class ParseBattleReportCore
             if ($personal['Team'] != $mate['Team']) {
                 continue;
             }
+            // $t1 = microtime(true);
             $matesData = $player->matesData()->where([
                 'player2_id'        =>  $this->players[$key]->id,
                 'week_number'       =>  $this->weekNumber,
-            ])->find();
+            ])->force('PlayerMatesParserIndex')->find();
+            // $t2 = microtime(true);
+            // Log::record('parseMatesData query #1: ' . ($t2 - $t1));
             if (!$matesData) {
                 $player->matesData()->save([
                     'player2_id'    =>  $this->players[$key]->id,
                     'period_id'     =>  $this->periodID,
                     'week_number'   =>  $this->weekNumber,
                 ]);
+                // $t3 = microtime(true);
+                // Log::record('parseMatesData save: ' . ($t3 - $t2));
                 $matesData = $player->matesData()->where([
                     'player2_id'    =>  $this->players[$key]->id,
                     'week_number'   =>  $this->weekNumber,
-                ])->find();
+                ])->force('PlayerMatesParserIndex')->find();
+                // $t4 = microtime(true);
+                // Log::record('parseMatesData query #2: ' . ($t4 - $t3));
             }
             $builder = new MatesDataBuilder($matesData, $this->contentBase, $personal, $mate);
             $builder->build();
             unset($builder);
+            // $t5 = microtime(true);
+            // Log::record('parseMatesData build finish: ' . ($t5 - $t4));
         }
     }
 

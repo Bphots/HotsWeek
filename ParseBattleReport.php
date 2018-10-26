@@ -45,6 +45,7 @@ class ParseBattleReport
 
     protected function parse($key)
     {
+        $t1 = microtime(true);
         $report = $this->reports[$key];
         $content = @json_decode(file_get_contents($this->files[$key]), true);
         // unlink($this->files[$key]);
@@ -55,5 +56,8 @@ class ParseBattleReport
             $parser->build();
             unset($parser);
         }
+        $t2 = microtime(true);
+        $delta = $t2 - $t1;
+        \think\Log::record('ParseBattleReport: ' . $delta);
     }
 }
