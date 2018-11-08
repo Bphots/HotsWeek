@@ -37,6 +37,8 @@ class ParseBattleReport
             try {
                 $this->parse($key);
                 Db::commit();
+                // delete Json file
+                unlink($this->files[$key]);
             } catch (\Exception $e) {
                 Db::rollback();
             }
@@ -47,8 +49,11 @@ class ParseBattleReport
     {
         $t1 = microtime(true);
         $report = $this->reports[$key];
-        $content = @json_decode(file_get_contents($this->files[$key]), true);
-        // unlink($this->files[$key]);
+        $contentOriginal = file_get_contents($this->files[$key]);
+        $content = @json_decode($contentOriginal, true);
+        // gzcompress Json file
+        $gzFileName = $this->files[$key] . '.gz';
+        file_put_contents($gzFileName, gzcompress($contentOriginal));
         $report->status = 0;
         $report->save();
         if ($content) {
