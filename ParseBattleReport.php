@@ -50,6 +50,7 @@ class ParseBattleReport
         $t1 = microtime(true);
         $report = $this->reports[$key];
         $contentOriginal = file_get_contents($this->files[$key]);
+        \think\Log::record('ParseBattleReportBegin: ' . $report->fingerprint);
         $content = @json_decode($contentOriginal, true);
         // gzcompress Json file
         $gzFileName = $this->files[$key] . '.gz';
@@ -63,6 +64,6 @@ class ParseBattleReport
         }
         $t2 = microtime(true);
         $delta = $t2 - $t1;
-        \think\Log::record('ParseBattleReport: ' . $delta);
+        \think\Log::record('ParseBattleReportFinish: ' . $report->fingerprint . ' ' . $delta);
     }
 }
