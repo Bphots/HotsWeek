@@ -548,5 +548,10 @@ trait Heroes
         "玛尔加尼斯" => HERO_MALG,
         "瑪爾加尼斯" => HERO_MALG,
         "말가니스" => HERO_MALG,
+        "Orphea" => HERO_ORPH,
+        "orphea" => HERO_ORPH,
+        "奥菲娅" => HERO_ORPH,
+        "歐菲亞" => HERO_ORPH,
+        "orphéa" => HERO_ORPH,
     ];
 }
