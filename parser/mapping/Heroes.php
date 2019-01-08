@@ -553,5 +553,11 @@ trait Heroes
         "奥菲娅" => HERO_ORPH,
         "歐菲亞" => HERO_ORPH,
         "orphéa" => HERO_ORPH,
+        "Orfea" => HERO_ORPH,
+        "Орфея" => HERO_ORPH,
+        "오르피아" => HERO_ORPH,
+        "Imperius" => HERO_IMPE,
+        "英普瑞斯" => HERO_IMPE,
+        "임페리우스" => HERO_IMPE,
     ];
 }
