@@ -104,3 +104,6 @@ const HERO_YREL = 80;
 const HERO_WHIT = 81;
 const HERO_MEPH = 82;
 const HERO_MALG = 83;
+const HERO_ORPH = 84;
+const HERO_IMPE = 85;
+const HERO_ANDU = 86;
