@@ -9,5 +9,6 @@ trait GameModes
         GAMEMODE_HEROLEAGUE => 'HeroLeague',
         GAMEMODE_TEAMLEAGUE => 'TeamLeague',
         GAMEMODE_UNRANKEDDRAFT => 'UnrankedDraft',
+        GAMEMODE_STORMLEAGUE => 'StormLeague',
     ];
 }
