@@ -59,6 +59,10 @@ class ParseBattleReportCore
         } elseif (!in_array($this->contentBase['GameMode'], $this->gameModeLimit)) {
             return false;
         }
+        // StormLeague to TeamLeague
+        if ($this->contentBase['GameMode'] === GAMEMODE_STORMLEAGUE) {
+            $this->contentBase['GameMode'] = GAMEMODE_TEAMLEAGUE;
+        }
         if ($this->outdated !== 2) {
             foreach ($this->players as $key => $player) {
                 $personal = $this->contentPlayers[$key];
