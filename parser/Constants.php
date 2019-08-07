@@ -108,3 +108,4 @@ const HERO_MALG = 83;
 const HERO_ORPH = 84;
 const HERO_IMPE = 85;
 const HERO_ANDU = 86;
+const HERO_QHIR = 87;

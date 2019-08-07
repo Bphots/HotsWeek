@@ -559,9 +559,13 @@ trait Heroes
         "Imperius" => HERO_IMPE,
         "英普瑞斯" => HERO_IMPE,
         "임페리우스" => HERO_IMPE,
-        "Anduin" => HERO_ANDU,        
-        "安杜因" => HERO_ANDU,        
-        "安度因" => HERO_ANDU,        
-        "Андуин" => HERO_ANDU,        
+        "Anduin" => HERO_ANDU,
+        "안두인" => HERO_ANDU,
+        "安杜因" => HERO_ANDU,
+        "安度因" => HERO_ANDU,
+        "Андуин" => HERO_ANDU,
+        "Qhira" => HERO_QHIR,
+        "奇菈" => HERO_QHIR,
+        "琪拉" => HERO_QHIR,
     ];
 }
